@@ -28,12 +28,31 @@
 
     <div class="search">
         <div class="search__component">
-            <div class="search_conteiner">
-                <input class="search_from">
-                <button name="swap__search"></button>
-            </div>
-            <input class="search__to">
-            <input class="date__search">
+            <!-- <div class="search_conteiner">
+                
+            </div> -->
+                <!-- <input class="search_from"> -->
+                <input class="search_from" name="city" list="cities" />
+                <datalist id="cities"> 
+                     <option value="Минск" > 
+                     <option value="Гомель" > 
+                     <option value="Могилёв" > 
+                     <option value="Гродно" > 
+                     <option value="Брест" >
+                     <option value="Витебск" >     
+                </datalist>
+                <button name="swap_search" class="swap__search"><img class="icon-excel" src="./swap-pngrepo-com.png"></img></button>
+                <!-- <input class="search__to"> -->
+                <input class="search__to" name="city" list="cities" />
+                <datalist id="cities"> 
+                     <option value="Минск" > 
+                     <option value="Гомель" > 
+                     <option value="Могилёв" > 
+                     <option value="Гродно" > 
+                     <option value="Брест" >
+                     <option value="Витебск" >     
+                </datalist>
+                <input type="date" name="Date" class="date__search" id="davaToday">    
             <select class="passangere__search">
                 <option value="1">1 Пассажир</option>
                 <option value="2">2 Пассажира</option>
@@ -43,4 +62,7 @@
             <button class="button__search">Найти</button>
         </div>
     </div>
+
+    <script>document.getElementById('davaToday').valueAsDate = new Date();</script>
+
 </body>

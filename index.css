@@ -11,7 +11,7 @@ html{
 body{
     margin: 0 ;
     padding: 0 ;
-    width: 90%;
+    width: 100%;
 }
 
 
@@ -55,7 +55,7 @@ body{
     margin: 0;
     padding: 0;
     width: 80%;
-    height: 35px;
+    height: 30px;
 
     display: flex;
     flex-direction: row;
@@ -63,8 +63,64 @@ body{
     align-items: center;
 }
 
-.search__to{
+.search_conteiner{
     width: 20%;
     height: 100%;
+}
 
+.search__to{
+    width: 20%;
+    height: 29px;
+    border-left: none;
+    border-right: none;
+
+}
+
+.date__search{
+    width: 20%;
+    height: 30px;
+    border-left: none;
+    border-right: none;
+}
+
+.search_from{
+    width: 20%;
+    height: 29px;
+    border-right: none;
+    border-top-left-radius: 10px;
+    border-end-start-radius: 10px;
+}
+
+.swap__search{
+    height: 35px;
+    width: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    margin: 0;
+    border-left: none;
+    border-right: none;
+    background-color: white;
+}
+
+.passangere__search{
+    width: 15%;
+    height: 35px;
+    border-left: none;
+    border-right: none;
+    border-width: 2px;
+}
+
+.icon-excel {
+width: 25px;
+height: 25px;
+}
+
+.button__search{
+    width: 10%;
+    height: 35px;
+    border-left: none;
+    border-top-right-radius: 10px;
+    border-end-end-radius: 10px;
 }
