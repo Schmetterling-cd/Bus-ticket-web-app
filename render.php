@@ -1,4 +1,25 @@
-<script> 
+<?php
+    function Read()
+
+    {
+        $file = 'package.json';
+        $json_string = file_get_contents($file);
+        $accountType = json_decode($json_string);
+
+        foreach ($accountType as $key => $val)
+        {
+            foreach ($val as $value)
+            {
+                $items = new Item($value->from, $value->to, $value->coast);
+                $arr[] = $items;
+            }
+        }
+        return $arr;
+    }
+?>
+
+
+<script>
 
 const waysContainer = document.querySelector('#ways-container');
 
