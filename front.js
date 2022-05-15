@@ -4,4 +4,7 @@ window.addEventListener('click', function(event){
         console.log('search');
     }
 
+    if(event.target.dataset.action === 'showcase'){
+        
+    }
 })

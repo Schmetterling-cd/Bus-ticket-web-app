@@ -89,21 +89,31 @@
         <div class="dinamic__window">
                 <h4 class="title">Популярные маршруты</h4>
 
-                <div class="info__zone">
-                    <div class="dinamic__item"></div>          
-                    <div class="dinamic__item"></div>
-                    <div class="dinamic__item"></div>
-                </div>
-           
-                <div class="info__zone">
-                    <div class="dinamic__item"></div>
-                    <div class="dinamic__item"></div>
-                    <div class="dinamic__item"></div>
+                <div class="info__zone" id="ways-container">
+                    <div data-action="showcase" class="dinamic__item">
+                        <div data-action="showcase" class="item_zone_left">
+                            <div class="left__title" data-action="showcase">
+                                <div class="from">Минск</div> 
+                                <div>-</div>
+                                <div class="to">Гомель</div>
+                            </div>
+                            <div data-action="showcase" class="left__coast">
+                                <div class="coast">5</div> 
+                                <label>р.</label>
+                            </div>
+                            
+                        </div>
+                        <div data-action="showcase" class="item_zone_right">
+                            <img src="./images/pngwing.com.png" width="25px" height="25px" data-action="showcase">
+                        </div>
+                    </div>          
+
                 </div>
 
         </div>
-    
+        <script src="./start.js"></script>
         <script>document.getElementById('davaToday').valueAsDate = new Date();</script>
         <script src="./front.js"></script>
+        
     
     </body>
