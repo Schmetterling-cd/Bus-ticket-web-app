@@ -47,7 +47,7 @@
         <div class="search__conteiner">
         <div class="search_background">
             <div class="search__text">
-                <h1 class="text__line1">Поиск автобуссов и маршруток</h1>
+                <h1 class="text__line1">Поиск автобусов и маршруток</h1>
                 <h2 class="text__line2">по Беларуси</h2>
             </div>
             <div class="search">
@@ -63,7 +63,7 @@
                         <option value="Витебск">
                     </datalist>
                     <button name="swap_search" class="swap__search"><img class="icon-excel"
-                            src="./swap-pngrepo-com.png"></img></button>
+                            src="./images/swap-pngrepo-com.png"></img></button>
                     <input class="search__to" name="city" list="cities" placeholder="Куда">
                     <datalist id="cities">
                         <option value="Минск">
@@ -80,16 +80,30 @@
                         <option value="3">3 Пассажира</option>
                         <option value="4">4 Пассажира</option>
                     </select>
-                    <button class="button__search">Найти</button>
+                    <button bus-search class="button__search">Найти</button>
                 </div>
             </div>
         </div>
         </div>
 
-        <div class="popular__ways">
-            
+        <div class="dinamic__window">
+                <h4 class="title">Популярные маршруты</h4>
+
+                <div class="info__zone">
+                    <div class="dinamic__item"></div>          
+                    <div class="dinamic__item"></div>
+                    <div class="dinamic__item"></div>
+                </div>
+           
+                <div class="info__zone">
+                    <div class="dinamic__item"></div>
+                    <div class="dinamic__item"></div>
+                    <div class="dinamic__item"></div>
+                </div>
+
         </div>
     
         <script>document.getElementById('davaToday').valueAsDate = new Date();</script>
+        <script src="./front.js"></script>
     
     </body>
