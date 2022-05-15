@@ -18,26 +18,31 @@ body{
 .header{
     margin: 0;
     padding: 0;
-    background-color: black;
+    background-color: white;
 
     margin: 0;
-    height: 70px;
+    height: 80px;
     width: 100%;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 .navigation{
     margin: 0;
     height: 70px;
-    width: 100%;
+    width: 70%;
     display: flex;
-    flex-direction: column;
-    justify-content: center;
+    flex-direction: row;
+    justify-content: space-between;
     align-items: center;
     text-decoration: none;
     color: aliceblue;
 }
 
-.search{
+.search__conteiner{
     margin: 0;
     padding: 0;
     width: 100%;
@@ -46,16 +51,39 @@ body{
     background-size: 100%;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: space-around;
     align-items: center;
+}
+
+.search_background{
+    width: 100%;
+    height: 100%;
+    content: '';
+    background: rgba(0,0,0,.5);
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.search{
+    margin: 0;
+    padding: 0;
+    height: 30%;
+    width: 70%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: left;
     
 }
 
 .search__component{
     margin: 0;
     padding: 0;
-    width: 80%;
-    height: 30px;
+    width: 100%;
+    height: 50px;
 
     display: flex;
     flex-direction: row;
@@ -63,64 +91,147 @@ body{
     align-items: center;
 }
 
-.search_conteiner{
-    width: 20%;
-    height: 100%;
-}
+
 
 .search__to{
-    width: 20%;
-    height: 29px;
+    width: 25%;
+    height: 49px;
     border-left: none;
     border-right: none;
-
+    border-top: none;
+    border-bottom: none;
+    text-align: center;
+    font-size: 15px;
 }
 
 .date__search{
-    width: 20%;
-    height: 30px;
+    width: 15%;
+    height: 51px;
     border-left: none;
     border-right: none;
+    border-top: none;
+    border-bottom: none;
+    border-color: none;
+    font-size: 15px;
+    font-family:Arial, Helvetica, sans-serif;
+    text-align: center;
 }
 
 .search_from{
-    width: 20%;
-    height: 29px;
-    border-right: none;
+    width: 25%;
+    height: 49px;
     border-top-left-radius: 10px;
     border-end-start-radius: 10px;
+    border-left: none;
+    border-right: none;
+    border-top: none;
+    border-bottom: none;
+    text-align: center;
+    font-size: 15px;
 }
 
 .swap__search{
-    height: 35px;
-    width: 35px;
+    height: 51px;
+    width: 51px;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 0;
     margin: 0;
+    background-color: white;
     border-left: none;
     border-right: none;
-    background-color: white;
+    border-top: none;
+    border-bottom: none;
 }
 
 .passangere__search{
-    width: 15%;
-    height: 35px;
+    width: 20%;
+    height: 51px;
     border-left: none;
     border-right: none;
+    border-top: none;
+    border-bottom: none;
     border-width: 2px;
+    background-color: white;
+    font-size: 15px;
 }
 
 .icon-excel {
-width: 25px;
-height: 25px;
+width: 35px;
+height: 35px;
 }
 
 .button__search{
-    width: 10%;
-    height: 35px;
+    width: 15%;
+    height: 51px;
     border-left: none;
+    border-right: none;
+    border-top: none;
+    border-bottom: none;
     border-top-right-radius: 10px;
     border-end-end-radius: 10px;
+    background-color: white;
+    font-size: 15px;
+    background-color: orange;
+}
+
+.text__line1{
+    color: white;
+    font-family: 'Mulish', sans-serif;
+    font-size: 64px;
+    margin: 0;
+    padding: 0;
+}
+
+.text__line2{
+    
+    color: rgb(187, 185, 185);
+    font-family: 'Mulish', sans-serif;
+    font-size: 36px;
+    margin: 0;
+    padding: 0;
+}
+
+.search__text{
+    width: 70%;
+    height: 130px;
+    flex-direction: column;
+    justify-content: start;
+    align-items: left;
+}
+
+.nav__component{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.logo{
+    color: black;
+    font-size: 36px;
+}
+
+.nav__right{
+    width: 37%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nav__left{
+    width: 15%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo__src{
+    font-family: 'Mulish', sans-serif;
+    font-size: 20px;
+    text-decoration: none;
+    color: black;
 }

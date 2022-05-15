@@ -3,66 +3,93 @@
 <head>
     <meta charset="UTF-8">
 	<link rel="stylesheet" href="index.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@200;800&display=swap" rel="stylesheet">
+
 	
     <title>Test</title>
 </head>
 
-<body>
+    <body>
         <header class="header">
+
             <nav class="navigation">
                 <div class="nav__right">
                     <div class="nav__component">
-                        <a href="">Помощь</a>
+                        <img src="./images/pegasus-svgrepo-com.svg" width="80" height="80"></img>
+                        <h3 class="logo">PigriTrans</h3>
+                    </div>
+                    <div class="nav__component">
+                        <img src="./images/pngwing.com.png" height="15px" width="15px"></img>
+                        <a href="index.html" class="logo__src">Найти</a> 
+                    </div>
+                    <div class="nav__component">
+                        <img src="./images/pngwing.com (1).png" height="15px" width="15px" alt="">
+                        <a href="" class="logo__src">Помощь</a>
                     </div>
                 </div>
                 <div class="nav__left">
                     <div class="nav__component">
-                        <a href="">Поездки</a>
+                        <img src="./images/pngwing.com (2).png" height="15px" width="15px" alt="">
+                        <a href="" class="logo__src">Поездки</a>
                     </div>
                     <div class="nav__component">
-                        <a href="">Войти</a>
+                        <img src="./images/pngwing.com (3).png" height="15px" width="15px" alt="">
+                        <a href="" class="logo__src">Войти</a>
                     </div>
                 </div>
             </nav>
-    </header>
 
-    <div class="search">
-        <div class="search__component">
-            <!-- <div class="search_conteiner">
-                
-            </div> -->
-                <!-- <input class="search_from"> -->
-                <input class="search_from" name="city" list="cities" />
-                <datalist id="cities"> 
-                     <option value="Минск" > 
-                     <option value="Гомель" > 
-                     <option value="Могилёв" > 
-                     <option value="Гродно" > 
-                     <option value="Брест" >
-                     <option value="Витебск" >     
-                </datalist>
-                <button name="swap_search" class="swap__search"><img class="icon-excel" src="./swap-pngrepo-com.png"></img></button>
-                <!-- <input class="search__to"> -->
-                <input class="search__to" name="city" list="cities" />
-                <datalist id="cities"> 
-                     <option value="Минск" > 
-                     <option value="Гомель" > 
-                     <option value="Могилёв" > 
-                     <option value="Гродно" > 
-                     <option value="Брест" >
-                     <option value="Витебск" >     
-                </datalist>
-                <input type="date" name="Date" class="date__search" id="davaToday">    
-            <select class="passangere__search">
-                <option value="1">1 Пассажир</option>
-                <option value="2">2 Пассажира</option>
-                <option value="3">3 Пассажира</option>
-                <option value="4">4 Пассажира</option>
-            </select>
-            <button class="button__search">Найти</button>
+        </header>
+
+
+        <div class="search__conteiner">
+        <div class="search_background">
+            <div class="search__text">
+                <h1 class="text__line1">Поиск автобуссов и маршруток</h1>
+                <h2 class="text__line2">по Беларуси</h2>
+            </div>
+            <div class="search">
+                <div class="search__component">
+    
+                    <input class="search_from" name="city" list="cities" placeholder="Откуда">
+                    <datalist id="cities">
+                        <option value="Минск">
+                        <option value="Гомель">
+                        <option value="Могилёв">
+                        <option value="Гродно">
+                        <option value="Брест">
+                        <option value="Витебск">
+                    </datalist>
+                    <button name="swap_search" class="swap__search"><img class="icon-excel"
+                            src="./swap-pngrepo-com.png"></img></button>
+                    <input class="search__to" name="city" list="cities" placeholder="Куда">
+                    <datalist id="cities">
+                        <option value="Минск">
+                        <option value="Гомель">
+                        <option value="Могилёв">
+                        <option value="Гродно">
+                        <option value="Брест">
+                        <option value="Витебск">
+                    </datalist>
+                    <input type="date" name="Date" class="date__search" id="davaToday">
+                    <select class="passangere__search">
+                        <option value="1">1 Пассажир</option>
+                        <option value="2">2 Пассажира</option>
+                        <option value="3">3 Пассажира</option>
+                        <option value="4">4 Пассажира</option>
+                    </select>
+                    <button class="button__search">Найти</button>
+                </div>
+            </div>
         </div>
-    </div>
+        </div>
 
-    <script>document.getElementById('davaToday').valueAsDate = new Date();</script>
-
-</body>
+        <div class="popular__ways">
+            
+        </div>
+    
+        <script>document.getElementById('davaToday').valueAsDate = new Date();</script>
+    
+    </body>
