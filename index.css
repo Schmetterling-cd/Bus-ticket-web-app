@@ -102,6 +102,7 @@ body{
     border-bottom: none;
     text-align: center;
     font-size: 15px;
+    outline: none;
 }
 
 .date__search{
@@ -115,6 +116,7 @@ body{
     font-size: 15px;
     font-family:Arial, Helvetica, sans-serif;
     text-align: center;
+    outline: none;
 }
 
 .search_from{
@@ -128,6 +130,7 @@ body{
     border-bottom: none;
     text-align: center;
     font-size: 15px;
+    outline: none;
 }
 
 .swap__search{
@@ -143,6 +146,7 @@ body{
     border-right: none;
     border-top: none;
     border-bottom: none;
+    outline: none;
 }
 
 .passangere__search{
@@ -155,6 +159,7 @@ body{
     border-width: 2px;
     background-color: white;
     font-size: 15px;
+    outline: none;
 }
 
 .icon-excel {
@@ -174,6 +179,7 @@ height: 35px;
     background-color: white;
     font-size: 15px;
     background-color: orange;
+    outline: none;
 }
 
 .text__line1{
@@ -214,7 +220,7 @@ height: 35px;
 }
 
 .nav__right{
-    width: 37%;
+    width: 470px;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -222,7 +228,7 @@ height: 35px;
 }
 
 .nav__left{
-    width: 15%;
+    width: 200px;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
