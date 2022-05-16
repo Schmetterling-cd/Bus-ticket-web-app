@@ -1,6 +1,6 @@
 <?php
 
-class Item
+class Cars
 {
     public $from;
     public $to;
