@@ -1,3 +1,4 @@
+
 Send();
 function Send(){
     jQuery.ajax({
@@ -6,9 +7,10 @@ function Send(){
         url:"render.php",
     }).done(function(msg){ 
         const waysContainer = document.querySelector('#ways-container');
+        waysContainer.classList.remove("dinamic__item");
         for (let i =0; i<9;i++)
         {
-            const productHTML = `<div data-action="showcase" class="dinamic__item">
+            const productHTML = `<div id="dinamic__item" data-action="showcase" class="dinamic__item">
         <div data-action="showcase" class="item_zone_left">
             <div class="left__title" data-action="showcase">
                 <div class="from">${msg[i].from}</div> 
@@ -29,4 +31,3 @@ function Send(){
         }  
         })
 }
-
