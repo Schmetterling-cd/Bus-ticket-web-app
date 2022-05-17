@@ -22,11 +22,18 @@ window.addEventListener('click', function (event) {
                     console.log('error');
                 }),
             }).done(function (msg) {
+                const json = msg;
                 let waysContainer = document.querySelector('.title');
                 waysContainer.innerText = "Поиск";
                 waysContainer = document.querySelector('#ways-container');
                 waysContainer.remove();
                 delete waysContainer;
+
+                json.forEach(element => {
+                    if (element.from == search__from && element.to == search__to && element.date == date && element.passenger >= passangere){
+                        console.log('cool');
+                    }
+                });
     
                 const wndDinamic = document.querySelector(".dinamic__window");
                 const productHTML = '';
