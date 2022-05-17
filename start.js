@@ -2,9 +2,13 @@
 Send();
 function Send(){
     jQuery.ajax({
-        dataType:'json',
+        dataType: 'json',
         type: "POST",
-        url:"render.php",
+        url: "Server.php",
+        data: { message: '0' },
+        error: (function () {
+            console.log('error');
+        }),
     }).done(function(msg){ 
         const waysContainer = document.querySelector('#ways-container');
         waysContainer.classList.remove("dinamic__item");
