@@ -10,6 +10,41 @@ window.addEventListener('click', function (event) {
         searchItem();        
     }
 
+    if(event.target.hasAttribute('#route__but')){
+        
+    }
+
+    if(event.target.hasAttribute('#route__but')){
+        
+    }
+
+    if(event.target.hasAttribute('#btnAuth')){
+        const numberPh =document.querySelector('.autorization__input').value;
+        jQuery.ajax({
+            dataType: 'json',
+            type: 'POST',
+            url: 'Server.php',
+            data: { message: numberPh },
+            error: (function () {
+                console.log('error in auth');
+            }),
+        }).done(function (msg) {
+            switch(msg){
+                //пользователь существует
+                case 0:
+                    const dinamicWND = document.querySelector('.autorization__conteiner');
+                    dinamicWND.querySelector('.autorization__input').value = '';
+                    dinamicWND.querySelector('.autorization__input').placeholder = 'Пароль';
+                    dinamicWND.querySelector('.btnAuth').innerText = 'Войти';
+                    dinamicWND.querySelector('.btnAuth').id = 'btnEnter';
+                    break;
+                //пользователя не существует
+                case 1:
+                    break;
+            }
+        });
+    }
+
     if (event.target.dataset.action === 'showcase') {
         const card = event.target.closest('.dinamic__item');
         const prodInfo = {
@@ -175,7 +210,7 @@ function searchItem(){
                                             <div class="route__small">
                                                 ${element.passenger}
                                             </div>
-                                            <div class="route__but">
+                                            <div id="route__but" class="route__but">
                                                 <div class="btnorder">Забронировать</div>
                                             </div>
                                           </div>`;
@@ -185,9 +220,35 @@ function searchItem(){
             });         
             })
     }
+
 }
 
+function passwordReq (){
+    
+}
 
+function EnterIn(){
+    jQuery.ajax({
+        dataType: 'json',
+        type: 'POST',
+        url: 'Server.php',
+        data: { message: '1' },
+        error: (function () {
+            console.log('error');
+        }),
+    }).done(function (msg) {
+        const json = msg;
+
+        switch(json.status){
+            case 'default':
+                break;
+            case 'admin':
+                break;
+            case 'driver':
+                break;
+        }
+    });
+}
 
 
 
