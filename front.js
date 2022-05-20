@@ -3,7 +3,9 @@ let popup = document.querySelector('.dialog__window'); // Само окно
 let modal = document.getElementById("popup");
 let btnModal = document.getElementById("btnEnter");
 let todayDate = new Date();
+let numberPh;
 document.getElementById('davaToday').valueAsDate = todayDate;
+Send();
 window.addEventListener('click', function (event) {
 
     if (event.target.hasAttribute('bus-search')) {
@@ -18,25 +20,169 @@ window.addEventListener('click', function (event) {
         
     }
 
-    if(event.target.hasAttribute('#btnAuth')){
-        const numberPh =document.querySelector('.autorization__input').value;
+    if(event.target.dataset.action === 'btnEnter'){
+        let password =document.querySelector('.autorization__input').value;
+        console.log(password);
+        const pass = password.toString();
+        console.log(pass);
+
+        try{
+            jQuery.ajax({
+                type: "POST",
+                dataType: 'text',
+                url: 'Server.php',
+                data: {message : pass},
+                error: (function () {
+                    console.log('error in password');
+                }),
+            }).done(function (msg) {
+                console.log(msg);
+                switch(msg){
+                    //пароль совпал пользователь админ
+                    case 'admin':
+                        console.log('auth3');
+                        const dinamicWND = document.querySelector('.autorization__conteiner');
+                        dinamicWND.querySelector('.btnAuth').remove();
+                        dinamicWND.querySelector('.autorization__input').remove();
+                        
+                        // const productHTML = ` <div id="route_info" class="route_info">
+                        //                         <div class="route__big">
+                        //                             <div class="time">
+                        //                                 ${element.date.hours}:${element.date.minutes}
+                        //                             </div>
+                        //                             <div class="place">
+                        //                                 ${element.start}
+                        //                             </div>
+                        //                         </div>
+                        //                         <div class="route__big">
+                        //                             <div class="time">
+                        //                                 ${timeinway.hours}:${timeinway.minutes}
+                        //                             </div>
+                        //                             <div class="place">
+                        //                                 ${element.end}
+                        //                             </div>
+                        //                         </div>
+                        //                         <div class="route__big">
+                        //                             <div class="place">
+                        //                                 Время в пути: ${element.way_time.hours}:${element.way_time.minutes}
+                        //                             </div>
+                        //                         </div>
+                        //                         <div class="route__small_coast">
+                        //                             ${element.coast}р.
+                        //                         </div>
+                        //                         <div class="route__small">
+                        //                             ${element.passenger}
+                        //                         </div>
+                        //                         <div id="route__but" class="route__but">
+                        //                             <div class="btnorder">Забронировать</div>
+                        //                         </div>
+                        //                       </div>`;
+                        // dinamicWND.insertAdjacentHTML('beforeend', productHTML);
+    
+                        break;
+                    //пароль совпал, пользователь гость
+                    case 'default':
+                        break;
+                    //пароль совпал, пользователь водитель
+                    case 'driver':
+                        break;
+                    //пароль не совпал
+                    case 'non':
+                        break;
+                }
+            });
+        }catch{
+            jQuery.ajax({
+                type: "POST",
+                dataType: 'text',
+                url: 'Server.php',
+                data: {message : pass},
+                error: (function () {
+                    console.log('error in password');
+                }),
+            }).done(function (msg) {
+                console.log(msg);
+                switch(msg){
+                    //пароль совпал пользователь админ
+                    case 'admin':
+                        console.log('auth3');
+                        const dinamicWND = document.querySelector('.autorization__conteiner');
+                        dinamicWND.querySelector('.btnAuth').remove();
+                        dinamicWND.querySelector('.autorization__input').remove();
+                        
+                        // const productHTML = ` <div id="route_info" class="route_info">
+                        //                         <div class="route__big">
+                        //                             <div class="time">
+                        //                                 ${element.date.hours}:${element.date.minutes}
+                        //                             </div>
+                        //                             <div class="place">
+                        //                                 ${element.start}
+                        //                             </div>
+                        //                         </div>
+                        //                         <div class="route__big">
+                        //                             <div class="time">
+                        //                                 ${timeinway.hours}:${timeinway.minutes}
+                        //                             </div>
+                        //                             <div class="place">
+                        //                                 ${element.end}
+                        //                             </div>
+                        //                         </div>
+                        //                         <div class="route__big">
+                        //                             <div class="place">
+                        //                                 Время в пути: ${element.way_time.hours}:${element.way_time.minutes}
+                        //                             </div>
+                        //                         </div>
+                        //                         <div class="route__small_coast">
+                        //                             ${element.coast}р.
+                        //                         </div>
+                        //                         <div class="route__small">
+                        //                             ${element.passenger}
+                        //                         </div>
+                        //                         <div id="route__but" class="route__but">
+                        //                             <div class="btnorder">Забронировать</div>
+                        //                         </div>
+                        //                       </div>`;
+                        // dinamicWND.insertAdjacentHTML('beforeend', productHTML);
+    
+                        break;
+                    //пароль совпал, пользователь гость
+                    case 'default':
+                        break;
+                    //пароль совпал, пользователь водитель
+                    case 'driver':
+                        break;
+                    //пароль не совпал
+                    case 'non':
+                        break;
+                }
+            });
+        }
+
+
+        
+    }
+
+    if(event.target.dataset.action === 'btnAuth'){
+        numberPh =document.querySelector('.autorization__input').value;
         jQuery.ajax({
-            dataType: 'json',
+            dataType: 'text',
             type: 'POST',
             url: 'Server.php',
-            data: { message: numberPh },
+            data: {message : numberPh},
             error: (function () {
                 console.log('error in auth');
             }),
         }).done(function (msg) {
+            console.log(msg);
             switch(msg){
                 //пользователь существует
-                case 0:
+                case '0':
                     const dinamicWND = document.querySelector('.autorization__conteiner');
                     dinamicWND.querySelector('.autorization__input').value = '';
                     dinamicWND.querySelector('.autorization__input').placeholder = 'Пароль';
                     dinamicWND.querySelector('.btnAuth').innerText = 'Войти';
                     dinamicWND.querySelector('.btnAuth').id = 'btnEnter';
+                    dinamicWND.querySelector('.btnAuth').dataset.action = 'btnEnter';
                     break;
                 //пользователя не существует
                 case 1:
@@ -97,10 +243,10 @@ function searchItem(){
     if (search__from != '' && search__to != ''){
         console.log('here');
         jQuery.ajax({
-            dataType: 'json',
+            dataType: 'text',
             type: 'POST',
             url: 'Server.php',
-            data: { message: '0' },
+            data: {message : 0},
             error: (function () {
                 console.log('error');
             }),
@@ -248,6 +394,45 @@ function EnterIn(){
                 break;
         }
     });
+}
+
+function Send(){
+    jQuery.ajax({
+        dataType: 'text',
+        type: "POST",
+        url: "Server.php",
+        data: { message: '0' },
+        error: (function () {
+            console.log('error in vitrine');
+        }),
+    }).done(function(msg){ 
+        console.log(msg);
+        const json = JSON.parse(msg);
+        console.log(json);
+        const waysContainer = document.querySelector('#ways-container');
+        waysContainer.classList.remove("dinamic__item");
+        for (let i =0; i<9;i++)
+        {
+            const productHTML = `<div id="dinamic__item" data-action="showcase" class="dinamic__item">
+        <div data-action="showcase" class="item_zone_left">
+            <div class="left__title" data-action="showcase">
+                <div class="from">${json[i].from}</div> 
+                <div>-</div>
+                <div class="to">${json[i].to}</div>
+            </div>
+            <div data-action="showcase" class="left__coast">
+                <div class="coast">${json[i].coast}</div> 
+                <label>р.</label>
+            </div>
+            
+        </div>
+        <div data-action="showcase" class="item_zone_right">
+            <img src="./images/pngwing.com.png" width="25px" height="25px" data-action="showcase">
+        </div>
+    </div> `;
+    waysContainer.insertAdjacentHTML('beforeend', productHTML);
+        }  
+        })
 }
 
 

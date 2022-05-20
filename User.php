@@ -7,14 +7,16 @@ class User
     public $name;
     public $routes;
     public $status;
+    public $password;
 
-    public function __construct($id, $phone_number, $name, $routes,$status)
+    public function __construct($id, $phone_number, $name, $routes,$status,$password)
     {
         $this->id = $id;
         $this->phone_number = $phone_number;
         $this->routes = $routes;
         $this->name = $name;
         $this->status = $status;
+        $this->password = $password;
     }
 }
 
