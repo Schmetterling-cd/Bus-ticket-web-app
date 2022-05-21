@@ -1,52 +1,37 @@
 <?php
 
-class Server{
+include 'User.php';
 
-    public $phnumber;
-    public $flag = false;
+class Server{
 
     public function Listener($request){
         if( $request == $_POST){
-            $data = $request;
             $patternPN = '/375(\d+){9}/';
-
-            //сравнение номера телефона с регуляркой
-            if( preg_match($patternPN,$data['message'])){
-                $this->userFinder($data['message']);
-            }
-
-            if($request['message']=='bykobyko'){
-                echo("great");
-                $this->Autorization($this->phnumber, $data['password']);
-            }
-                
            
-            switch ($data['message']){
+            switch ($request['request']){
 
                 case '0':
                     $this-> waysJSON();
                     break;
+                    
+                case '1':
+                    if( preg_match($patternPN,$request['number'])){
+                        $this->userFinder($this->phnumber);
+                    } else{
+                        echo '2';
+                    }
+                    break;
+                case '2':
+                    $password = $request['password'];
+                    $phone = $request['number'];
+                    $this->Autorization($phone, $password);
+                    break;
+                case '3':
+                    $this->Registration($request);
+                    break;
+                    
             }  
         } 
-            // $data = $request['message'];
-            // echo("great");
-            // $this->Autorization($this->phnumber, $data['password']);
-    }
-
-    public function CreateJSON($arr)
-    {
-        
-    }
-
-    public function Update($newUser)
-    {
-
-    }
-
-    function Registration()
-    {
-        
-
     }
 
     function userFinder($number){
@@ -55,27 +40,59 @@ class Server{
             echo "DB conection error";
         }
         $req = mysqli_query($mysql,"SELECT * FROM `User` WHERE phone_number =".$number);
-        $data = mysqli_fetch_all($req, MYSQLI_ASSOC);
+        $table = mysqli_fetch_all($req, MYSQLI_ASSOC);
+        $data = $table[0];
         if($data){
+            //print_r($data); 
             mysqli_close($mysql);
             $this->phnumber = $number;
-            $this->flag = true;
             echo 0;
             
         }else{
             mysqli_close($mysql);
+            echo 1;
         }
     }
 
+    function Registration($request){
+        $mysqli = mysqli_connect('localhost','root','5240102H000PB5','Bus_ticket');
+        if (mysqli_connect_errno()){
+            echo "DB conection error";
+        }
+        $req = mysqli_query($mysqli,"SELECT max(`id`) FROM `User`");
+        $table = mysqli_fetch_all($req, MYSQLI_NUM);
+        $data = $table[0];
+        $maxid = (int)$data[0] + 1;
+        //print_r("INSERT INTO `User`(`id`, `phone_number`, `password`, `name`, `routes`, `status`) VALUES (".(string)$maxid.",".$request["phone_number"].",".$request["password"].",".$request["name"].",".$request["routes"].",".$request["status"].")");
+        $req = mysqli_query($mysqli,"INSERT INTO `User`(`id`, `phone_number`, `password`, `name`, `status`) 
+                                     VALUES (".(string)$maxid.",".$request["phone_number"].",".$request["password"].",".$request["name"].",".$request["status"].")");
+        if ($req){
+            echo"sucsess";
+        }
+        mysqli_close($mysqli); 
+        
+    }
+
     function Autorization($number,$password){
-        $mysql = mysqli_connect('localhost','root','5240102H000PB5','Bus_ticket');
-        $req = mysqli_query($mysql,"SELECT * FROM `User` WHERE phone_number =".$number);
-        $data = mysqli_fetch_all($req, MYSQLI_ASSOC);
-        echo ("ther good");  
-        $user = new User($data["id"],$data["phone_number"],$data["name"],$data["routes"],$data["status"], $data['password']);
+        $mysqli = mysqli_connect('localhost','root','5240102H000PB5','Bus_ticket');
+        if (mysqli_connect_errno()){
+            echo "DB conection error";
+        }
+        $req = mysqli_query($mysqli,"SELECT * FROM `User` WHERE phone_number =".$number);
+        $table = mysqli_fetch_all($req, MYSQLI_ASSOC);
+        $data = $table[0];
+        
+        $user = new User($data["id"],$data["phone_number"],$data["name"],$data["routes"],$data["status"], $data['password']);      
+        
         if($user->password == $password){
-            $json_string=`{ "name": "`.$data["name"].`", "status" : "`.$data["status"].`", "routes": "`.$data["routes"].`"}`;
-            echo ("ther good");  
+            $object = new stdClass();
+            $object-> phone_number = $data["phone_number"];
+            $object-> name = $data["name"];
+            $object-> routs = $data["routes"];
+            $object-> status = $data["status"];
+            mysqli_close($mysqli); 
+            $json_string = json_encode($object);
+            echo $json_string;
         }
     }
 

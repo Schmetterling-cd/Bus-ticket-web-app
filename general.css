@@ -44,7 +44,7 @@
 
 .dilog__conversation{
     width: 100%;
-    height: 80%;
+    height: 100%;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -53,7 +53,7 @@
 
 .autorization{
     width: 60%;
-    height: 100%;
+    height: 80%;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -63,6 +63,7 @@
 .autorization__input{
     width: 400px;
     height: 25px;
+    margin-top: 20px;
     border-left: none;
     border-right: none;
     border-top: none;
@@ -114,6 +115,7 @@
 .btnAuth{
     width: 400px;
     height: 35px;
+    margin-top: 20px;
     border-top: none;
     border-left: none;
     border-right: none;
@@ -129,11 +131,11 @@
 
 .autorization__conteiner{
     width: 100%;
-    height: 50%;
+    height: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: space-around;
+    justify-content: center;
 }
 
 .route_info{
@@ -228,4 +230,20 @@
     align-items: center;
     outline: none;
     cursor: default;
+}
+
+.confirm__input{
+    width: 400px;
+    height: 25px;
+    border-left: none;
+    border-right: none;
+    border-top: none;
+    border-width: 1px;
+    outline: none;
+    font-size: 20px;
+    margin-top: 20px;
+}
+
+.attancion{
+    color: red;
 }
