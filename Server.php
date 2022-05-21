@@ -59,15 +59,12 @@ class Server{
         if (mysqli_connect_errno()){
             echo "DB conection error";
         }
-        $req = mysqli_query($mysqli,"SELECT max(`id`) FROM `User`");
-        $table = mysqli_fetch_all($req, MYSQLI_NUM);
-        $data = $table[0];
-        $maxid = (int)$data[0] + 1;
         //print_r("INSERT INTO `User`(`id`, `phone_number`, `password`, `name`, `routes`, `status`) VALUES (".(string)$maxid.",".$request["phone_number"].",".$request["password"].",".$request["name"].",".$request["routes"].",".$request["status"].")");
-        $req = mysqli_query($mysqli,"INSERT INTO `User`(`id`, `phone_number`, `password`, `name`, `status`) 
-                                     VALUES (".(string)$maxid.",".$request["phone_number"].",".$request["password"].",".$request["name"].",".$request["status"].")");
+        $req = mysqli_query($mysqli,"INSERT INTO `Bus_ticket`.`User` (`phone_number`,`password`,`name`,`status`) VALUES ('".$request["phone_number"]."','".$request["password"]."','".$request["name"]."','".$request["status"]."')");
         if ($req){
-            echo"sucsess";
+            $this->Autorization($request["phone_number"], $request["password"]);
+        }else{
+            echo($mysqli->error);
         }
         mysqli_close($mysqli); 
         
@@ -94,6 +91,21 @@ class Server{
             $json_string = json_encode($object);
             echo $json_string;
         }
+
+        //$this->waysBD($data["routes"], $object);   
+    }
+
+    function waysBD($ways,$object){
+        $mysqli = mysqli_connect('localhost','root','5240102H000PB5','Bus_ticket');
+        if (mysqli_connect_errno()){
+            echo "DB conection error";
+        }
+        $json_string = $ways;
+        $json = json_encode($json_string);
+        echo ($json);
+        // $req = mysqli_query($mysqli,"SELECT * FROM `Ways` WHERE id =".$);
+        // $table = mysqli_fetch_all($req, MYSQLI_ASSOC);
+        // $data = $table[0];
     }
 
     private function waysJSON(){
