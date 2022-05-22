@@ -6,8 +6,7 @@ class Server{
 
     public function Listener($request){
         if( $request == $_POST){
-            $patternPN = '/375(\d+){9}/';
-           
+            $patternPN = '/(\+)375(\d+){9}/';
             switch ($request['request']){
 
                 case '0':
@@ -16,7 +15,7 @@ class Server{
                     
                 case '1':
                     if( preg_match($patternPN,$request['number'])){
-                        $this->userFinder($this->phnumber);
+                        $this->userFinder($request['number']);
                     } else{
                         echo '2';
                     }
@@ -28,6 +27,8 @@ class Server{
                     break;
                 case '3':
                     $this->Registration($request);
+                    break;
+                case '4':
                     break;
                     
             }  
@@ -43,7 +44,6 @@ class Server{
         $table = mysqli_fetch_all($req, MYSQLI_ASSOC);
         $data = $table[0];
         if($data){
-            //print_r($data); 
             mysqli_close($mysql);
             $this->phnumber = $number;
             echo 0;
@@ -90,22 +90,7 @@ class Server{
             mysqli_close($mysqli); 
             $json_string = json_encode($object);
             echo $json_string;
-        }
-
-        //$this->waysBD($data["routes"], $object);   
-    }
-
-    function waysBD($ways,$object){
-        $mysqli = mysqli_connect('localhost','root','5240102H000PB5','Bus_ticket');
-        if (mysqli_connect_errno()){
-            echo "DB conection error";
-        }
-        $json_string = $ways;
-        $json = json_encode($json_string);
-        echo ($json);
-        // $req = mysqli_query($mysqli,"SELECT * FROM `Ways` WHERE id =".$);
-        // $table = mysqli_fetch_all($req, MYSQLI_ASSOC);
-        // $data = $table[0];
+        } 
     }
 
     private function waysJSON(){
@@ -119,7 +104,5 @@ class Server{
 
 $listener = new Server();
 $listener->Listener($_REQUEST);
-$_REQUEST = NULL;
-unset($listener);
 
 ?>

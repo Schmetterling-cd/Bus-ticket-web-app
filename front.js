@@ -1,8 +1,9 @@
 let popupBg = document.querySelector('.popup'); // Фон попап окна
 let popup = document.querySelector('.dialog__window'); // Само окно
 let modal = document.getElementById("popup");
-let btnModal = document.getElementById("btnEnter");
+//let btnModal = document.getElementById("btnEnter");
 let todayDate = new Date();
+let ways;
 let numberPh;
 document.getElementById('davaToday').valueAsDate = todayDate;
 Send();
@@ -13,10 +14,26 @@ window.addEventListener('click', function (event) {
     }
 
     if (event.target.hasAttribute('#route__but')) {
+        const datarq = {
+            request: '2',
+            password: pass,
+            number: numberPh,
+        }
+        jQuery.ajax({
+            type: "POST",
+            chache: false,
+            dataType: 'text',
+            url: 'Server.php',
+            data: datarq,
+            error: (function () {
+                console.log('error in password');
+            }),
+        }).done(function (msg) {
 
+        });
     }
 
-    if (event.target.dataset.action === 'btnEnter') {
+    if (event.target.dataset.action === 'btnAcc') {
         let password = document.querySelector('.autorization__input').value;
         const pass = password.toString();
         const datarq = {
@@ -38,7 +55,7 @@ window.addEventListener('click', function (event) {
             console.log(msg);
             json = JSON.parse(msg);
             console.log(json);
-            switch (json.status) {
+            switch (json["status"]) {
                 //пароль совпал пользователь админ
                 case 'admin':
                     console.log('auth3');
@@ -54,6 +71,26 @@ window.addEventListener('click', function (event) {
                     break;
                 //пароль совпал, пользователь гость
                 case 'default':
+                    let defaultWND = document.getElementById('btnEnter');
+                    defaultWND.textContent = json["name"];
+                    document.querySelector('.text_dHeader').textContent ='Аккаунт';
+                    defaultWND = defaultWND.closest('.nav__component');
+                    defaultWND.style.marginLeft = '15px';
+                    console.log('default');
+                    ways = JSON.parse(json["routs"]);
+                    defaultWND = document.querySelector('.autorization__conteiner');
+                    defaultWND.querySelector('.btnAuth').remove();
+                    defaultWND.querySelector('.autorization__input').remove();
+                    const defaultHTML = `<div class='inviter__body'>
+                                                <div class='inviter__name'>${json["name"]} <img id='btnEdit' class='inviter__img' src='./images/pencil.png'></img></div>
+                                                <div class='inviter__phone'>${json["phone_number"]}</div>
+                                         </div>
+                                         <div class='inviter__footer'>
+                                            <button id='btnExit' class='inviter__exit'>Выход</button>
+                                         </div>`;
+                    defaultWND.insertAdjacentHTML('beforeend', defaultHTML);
+                    defaultWND.style.justifyContent = "space-around";
+                    defaultWND.style.alignItems = "flex-start";
                     break;
                 //пароль совпал, пользователь водитель
                 case 'driver':
@@ -159,8 +196,8 @@ window.addEventListener('click', function (event) {
                     dinamicWND.querySelector('.autorization__input').placeholder = 'Пароль';
                     dinamicWND.querySelector('.autorization__input').type = 'password';
                     dinamicWND.querySelector('.btnAuth').innerText = 'Войти';
-                    dinamicWND.querySelector('.btnAuth').id = 'btnEnter';
-                    dinamicWND.querySelector('.btnAuth').dataset.action = 'btnEnter';
+                    dinamicWND.querySelector('.btnAuth').id = 'btnAcc';
+                    dinamicWND.querySelector('.btnAuth').dataset.action = 'btnAcc';
                     break;
                 //пользователя не существует
                 case '1':
@@ -255,16 +292,32 @@ function searchItem() {
             let Container = document.querySelector('.title');
             Container.innerText = "Поиск";
             Container = null;
+
+            try {
+                if (document.querySelector('#search_cards').contains) {
+                    Container = document.querySelector('#search_cards');
+                    Container.remove();
+                    Container = document.querySelector('.dinamic__window');
+                    const searchHTML =`<div id="search_cards" class='search_cards'></div>`;
+                    Container.insertAdjacentHTML('beforeend', searchHTML);
+                }
+            }
+            catch (e) {
+                if (e instanceof TypeError) {
+
+                }
+            }
+
+
             try {
                 console.log('try');
                 if (document.querySelector('#ways-container').contains) {
-                    console.log('giger');
                     Container = document.querySelector('#ways-container');
                     Container.remove();
+                    Container = document.querySelector('.dinamic__window');
+                    const divHTML =`<div id="search_cards" class='search_cards'></div>`;
+                    Container.insertAdjacentHTML('beforeend', divHTML);
                 }
-
-
-
             }
             catch (e) {
                 if (e instanceof TypeError) {
@@ -272,22 +325,6 @@ function searchItem() {
 
                 }
             }
-
-            try {
-                if (document.querySelector('#route_info').contains) {
-                    Container = document.querySelector('#route_info');
-                    Container.remove();
-                }
-
-
-            }
-            catch (e) {
-                if (e instanceof TypeError) {
-
-                    Container.remove();
-                }
-            }
-
             json.forEach(element => {
                 if (element.from == search__from && element.to == search__to && element.date.day == date.getDate() && element.date.month == date.getMonth() + 1 && element.date.year == date.getFullYear() && Number(element.passenger) >= Number(passangere)) {
                     console.log('cool');
@@ -326,7 +363,7 @@ function searchItem() {
                         timeinway.minutes = '00';
                     }
 
-                    const dinamicWND = document.querySelector('.dinamic__window');
+                    const dinamicWND = document.querySelector('#search_cards');;
                     const productHTML = ` <div id="route_info" class="route_info">
                                             <div class="route__big">
                                                 <div class="time">
@@ -428,8 +465,3 @@ function Send() {
         }
     })
 }
-
-
-
-
-
