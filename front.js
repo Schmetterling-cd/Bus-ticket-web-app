@@ -7,8 +7,26 @@ let todayDate = new Date();
 let ways;
 let numberPh;
 document.getElementById('davaToday').valueAsDate = todayDate;
+Start();
 Send();
 window.addEventListener('click', function (event) {
+
+    if (event.target.hasAttribute('btnExit')) {
+        console.log('exit');
+        user = null;
+        jQuery.ajax({
+            type: "POST",
+            chache: false,
+            dataType: 'text',
+            url: 'Server.php',
+            data: {"request": '8'},
+            error: (function () {
+                console.log('error');
+            }),
+        }).done(function (msg) {
+            location.reload();
+        });
+    }
 
     if (event.target.hasAttribute('bus-search')) {
         searchItem();
@@ -75,56 +93,7 @@ window.addEventListener('click', function (event) {
                 console.log('error in password');
             }),
         }).done(function (msg) {
-            console.log(msg);
-            json = JSON.parse(msg);
-            console.log(json);
-            switch (json["status"]) {
-                //пароль совпал пользователь админ
-                case 'admin':
-                    console.log('auth3');
-                    const dinamicWND = document.querySelector('.autorization__conteiner');
-                    dinamicWND.querySelector('.btnAuth').remove();
-                    dinamicWND.querySelector('.autorization__input').remove();
-
-                    const productHTML = ``;
-                    dinamicWND.insertAdjacentHTML('beforeend', productHTML);
-                    break;
-                //пароль совпал, пользователь гость
-                case 'default':
-                    let defaultWND = document.getElementById('btnEnter');
-                    defaultWND.textContent = json["name"];
-                    document.querySelector('.text_dHeader').textContent ='Аккаунт';
-                    defaultWND = defaultWND.closest('.nav__component');
-                    defaultWND.style.marginLeft = '15px';
-                    console.log('default');
-                    ways = JSON.parse(json["routs"]);
-                    defaultWND = document.querySelector('.autorization__conteiner');
-                    defaultWND.querySelector('.btnAuth').remove();
-                    defaultWND.querySelector('.autorization__input').remove();
-                    const defaultHTML = `<div class='inviter__body'>
-                                                <div class='inviter__name'>${json["name"]} <img id='btnEdit' class='inviter__img' src='./images/pencil.png'></img></div>
-                                                <div class='inviter__phone'>${json["phone_number"]}</div>
-                                         </div>
-                                         <div class='inviter__footer'>
-                                            <button id='btnExit' class='inviter__exit'>Выход</button>
-                                         </div>`;
-                    defaultWND.insertAdjacentHTML('beforeend', defaultHTML);
-                    defaultWND.style.justifyContent = "space-around";
-                    defaultWND.style.alignItems = "flex-start";
-                    user.id = json["id"];
-                    user.name = json["name"];
-                    user.routes = JSON.parse(json["routs"]);
-                    if(user.routes == null || user.routs == ''){
-                        user.routes = new Array();
-                    }
-                    break;
-                //пароль совпал, пользователь водитель
-                case 'driver':
-                    break;
-                //пароль не совпал
-                case 'non':
-                    break;
-            }
+            Auth(msg);
         });
     }
 
@@ -669,4 +638,78 @@ function Send() {
                 waysContainer.insertAdjacentHTML('beforeend', productHTML);
         });
     })
+}
+
+function Start(){
+    jQuery.ajax({
+        dataType: 'text',
+        type: "POST",
+        url: "Server.php",
+        data: { request: '7' },
+        error: (function () {
+            console.log('error in vitrine');
+        }),
+    }).done(function (msg) {
+        console.log(msg);
+        if(msg == null){
+           console.log('null'); 
+        }else{
+            Auth(msg);
+        }
+        
+    });
+}
+
+function Auth(msg) {
+    console.log(msg);
+        json = JSON.parse(msg);
+    console.log(json);
+    switch (json["status"]) {
+        //пароль совпал пользователь админ
+        case 'admin':
+            console.log('auth3');
+            const dinamicWND = document.querySelector('.autorization__conteiner');
+            dinamicWND.querySelector('.btnAuth').remove();
+            dinamicWND.querySelector('.autorization__input').remove();
+
+            const productHTML = ``;
+            dinamicWND.insertAdjacentHTML('beforeend', productHTML);
+            break;
+        //пароль совпал, пользователь гость
+        case 'default':
+            let defaultWND = document.getElementById('btnEnter');
+            defaultWND.textContent = json["name"];
+            document.querySelector('.text_dHeader').textContent = 'Аккаунт';
+            defaultWND = defaultWND.closest('.nav__component');
+            defaultWND.style.marginLeft = '15px';
+            console.log('default');
+            ways = JSON.parse(json["routs"]);
+            defaultWND = document.querySelector('.autorization__conteiner');
+            defaultWND.querySelector('.btnAuth').remove();
+            defaultWND.querySelector('.autorization__input').remove();
+            const defaultHTML = `<div class='inviter__body'>
+                                            <div class='inviter__name'>${json["name"]} <img id='btnEdit' class='inviter__img' src='./images/pencil.png'></img></div>
+                                            <div class='inviter__phone'>${json["phone_number"]}</div>
+                                         </div>
+                                         <div class='inviter__footer'>
+                                            <button btnExit id='btnExit' class='inviter__exit'>Выход</button>
+                                         </div>`;
+            defaultWND.insertAdjacentHTML('beforeend', defaultHTML);
+            defaultWND.style.justifyContent = "space-around";
+            defaultWND.style.alignItems = "flex-start";
+            user.id = json["id"];
+            user.name = json["name"];
+            user.routes = JSON.parse(json["routs"]);
+            if (user.routes == null || user.routs == '') {
+                user.routes = new Array();
+            }
+            break;
+        //пароль совпал, пользователь водитель
+        case 'driver':
+            break;
+        //пароль не совпал
+        case 'non':
+            break;
+    }
+    
 }

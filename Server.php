@@ -38,6 +38,18 @@ class Server{
                 case '6':
                     $this->reservRout($request["userid"],$request["routid"], $request["userroutes"]);
                     break;
+                case '7';
+                    if(isset($_COOKIE["phone"]) && isset($_COOKIE["password"]) ){
+                        $this->Autorization($_COOKIE["phone"],$_COOKIE["password"]);
+                    }else{
+                        echo null;
+                    }
+                    
+                    break;
+                case '8':
+                    setcookie("password", null);
+                    setcookie("phone", null);
+                    break;
                     
             }  
         } 
@@ -98,6 +110,8 @@ class Server{
             $object-> status = $data["status"];
             mysqli_close($mysqli); 
             $json_string = json_encode($object);
+            setcookie("password", $data["password"]);
+            setcookie("phone", $data["phone_number"]);
             echo $json_string;
         } 
     }
