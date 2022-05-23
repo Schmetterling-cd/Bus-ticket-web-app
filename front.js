@@ -1,6 +1,7 @@
 let popupBg = document.querySelector('.popup'); // Фон попап окна
 let popup = document.querySelector('.dialog__window'); // Само окно
 let modal = document.getElementById("popup");
+let user = new Object();
 //let btnModal = document.getElementById("btnEnter");
 let todayDate = new Date();
 let ways;
@@ -13,26 +14,48 @@ window.addEventListener('click', function (event) {
         searchItem();
     }
 
-    if (event.target.hasAttribute('#route__but')) {
-        const datarq = {
-            request: '2',
-            password: pass,
-            number: numberPh,
+    // забронировать
+    if (event.target.dataset.action === 'btnorder') {
+        if (Object.keys(user).length) {
+            const routeWND = event.target.closest('.route_info');
+            let add = new Object();
+            add={
+                id: event.target.closest('.route_info').id,
+                seats: this.document.querySelector('.passangere__search').value,
+            }
+            console.log(add);
+            user.routes.push(add);
+            
+            console.log(user.routes);
+            //console.log(obj);
+            const datarq = {
+                request: '6',
+                userid: user.id,
+                userroutes: JSON.stringify(user.routes),
+                routid: event.target.closest('.route_info').id,
+            }
+            console.log(datarq);
+            jQuery.ajax({
+                type: "POST",
+                chache: false,
+                dataType: 'text',
+                url: 'Server.php',
+                data: datarq,
+                error: (function () {
+                    console.log('error');
+                }),
+            }).done(function (msg) {
+                console.log(msg);
+                routeWND.querySelector('#btnorder').innerText = 'Забронировано';
+                routeWND.querySelector('#btnorder').id = 'conf_order';
+                routeWND.querySelector('.btnorder').dataset.action = 'conf_order';
+                routeWND.querySelector('.btnorder').className = 'btnConfOrder';
+            });
         }
-        jQuery.ajax({
-            type: "POST",
-            chache: false,
-            dataType: 'text',
-            url: 'Server.php',
-            data: datarq,
-            error: (function () {
-                console.log('error in password');
-            }),
-        }).done(function (msg) {
-
-        });
+        
     }
 
+    //кнопка вход
     if (event.target.dataset.action === 'btnAcc') {
         let password = document.querySelector('.autorization__input').value;
         const pass = password.toString();
@@ -65,9 +88,6 @@ window.addEventListener('click', function (event) {
 
                     const productHTML = ``;
                     dinamicWND.insertAdjacentHTML('beforeend', productHTML);
-
-
-
                     break;
                 //пароль совпал, пользователь гость
                 case 'default':
@@ -91,6 +111,12 @@ window.addEventListener('click', function (event) {
                     defaultWND.insertAdjacentHTML('beforeend', defaultHTML);
                     defaultWND.style.justifyContent = "space-around";
                     defaultWND.style.alignItems = "flex-start";
+                    user.id = json["id"];
+                    user.name = json["name"];
+                    user.routes = JSON.parse(json["routs"]);
+                    if(user.routes == null || user.routs == ''){
+                        user.routes = new Array();
+                    }
                     break;
                 //пароль совпал, пользователь водитель
                 case 'driver':
@@ -100,12 +126,147 @@ window.addEventListener('click', function (event) {
                     break;
             }
         });
-
-
-
-
     }
 
+    // выводим поездки пользователя
+    if (event.target.hasAttribute('btnRoutes')) {
+        if(Object.keys(user).length){
+            console.log(user.routes[0]['id']);
+            let Container = document.querySelector('.title');
+            Container.innerText = "Ваши поездки";
+
+            try {
+                if (document.querySelector('#search_cards').contains) {
+                    Container = document.querySelector('#search_cards');
+                    Container.remove();
+                    Container = document.querySelector('.dinamic__window');
+                    const searchHTML =`<div id="search_cards" class='search_cards'></div>`;
+                    Container.insertAdjacentHTML('beforeend', searchHTML);
+                }
+            }
+            catch (e) {
+                if (e instanceof TypeError) {
+
+                }
+            }
+
+
+            try {
+                console.log('try');
+                if (document.querySelector('#ways-container').contains) {
+                    Container = document.querySelector('#ways-container');
+                    Container.remove();
+                    Container = document.querySelector('.dinamic__window');
+                    const divHTML =`<div id="search_cards" class='search_cards'></div>`;
+                    Container.insertAdjacentHTML('beforeend', divHTML);
+                }
+            }
+            catch (e) {
+                if (e instanceof TypeError) {
+
+
+                }
+            }
+
+            user.routes.forEach(element => {
+                const datarq = {
+                    request: '4',
+                    rout: element['id'],
+                }
+                jQuery.ajax({
+                    type: "POST",
+                    chache: false,
+                    dataType: 'text',
+                    url: 'Server.php',
+                    data: datarq,
+                    error: (function () {
+                        console.log('error in password');
+                    }),
+                }).done(function (msg) {     
+                    console.log(JSON.parse(msg));
+                    json = JSON.parse(msg);
+                    date = JSON.parse(json['time'])[0];
+                    way_time = JSON.parse(json['way_time'])[0];
+                    console.log(date);
+
+                    if ((date.day >= todayDate.getDate() && date.month >= todayDate.getMonth() + 1 && date.year >= todayDate.getFullYear()) || (date.month >= todayDate.getMonth() + 1 && date.year >= todayDate.getFullYear()) || (date.year >= todayDate.getFullYear())) {
+                        let timeinway;
+                    if (Number(date['hours']) + Number(way_time['hours']) < 24 && Number(date['minutes']) + Number(way_time['minutes']) < 60) {
+                        console.log('shet');
+                        timeinway = {
+                            hours: Number(date['hours']) + Number(way_time['hours']),
+                            minutes: Number(date['minutes']) + Number(way_time['minutes']),
+                        }
+                    } else {
+                        console.log('time');
+                        if (Number(date['minutes']) + Number(way_time.minutes) >= 60 && Number(date['hours']) + Number(way_time['hours']) < 24) {
+                            timeinway = {
+                                hours: Number(date['hours']) + Number(way_time['hours']) + 1,
+                                minutes: Number(date['minutes']) + Number(way_time['minutes']) - 60,
+                            }
+                        } else {
+                            timeinway = {
+                                hours: Number(date['hours']) + Number(way_time['hours']) + 1 - 24,
+                                minutes: Number(date['minutes']) + Number(way_time['minutes']) - 60,
+                            }
+                        }
+                        if (Number(date['hours']) + Number(way_time['hours']) >= 24 && Number(date['minutes']) + Number(way_time.minutes) < 60) {
+                            timeinway = {
+                                hours: Number(hours) + Number(date['hours']) + Number(way_time['hours']) - 24,
+                                minutes: Number(date['minutes']) + Number(way_time['minutes']),
+                            }
+                        }
+                    }
+
+                    if (timeinway.hours == 24) {
+                        timeinway.hours = '00';
+                    }
+                    if (timeinway.minutes == 0) {
+                        timeinway.minutes = '00';
+                    }
+                    const dinamicWND = document.querySelector('#search_cards');;
+                    const productHTML = ` <div id="${json.id}" class="route_info">
+                                            <div class="route__big">
+                                                <div class="time">
+                                                    ${date.hours}:${date.minutes}
+                                                </div>
+                                                <div class="place">
+                                                    ${json.start}
+                                                </div>
+                                            </div>
+                                            <div class="route__big">
+                                                <div class="time">
+                                                    ${timeinway.hours}:${timeinway.minutes}
+                                                </div>
+                                                <div class="place">
+                                                    ${json.end}
+                                                </div>
+                                            </div>
+                                            <div class="route__big">
+                                                <div class="place">
+                                                    Дата отправления: ${date.day}.${date.month}
+                                                </div>
+                                            </div>
+                                            <div class="route__small_coast">
+                                                ${Number(json.coast)*Number(element.seats)}р.
+                                            </div>
+                                            <div class="route__small">
+                                                ${element.seats}
+                                            </div>
+                                            <div id="route__but" class="route__but">
+                                                <div id='conf_order' data-action="conf_order" class="btnConfOrder">Забронировано</div>
+                                            </div>
+                                          </div>`;
+                    dinamicWND.insertAdjacentHTML('beforeend', productHTML);
+                    }
+                });
+            });
+        }else{
+            console.log('empty');
+        }
+    }
+
+    //регистрация
     if (event.target.dataset.action === 'btnReg') {
         try{
             document.querySelector('.attancion').remove();
@@ -159,6 +320,7 @@ window.addEventListener('click', function (event) {
         }
     }
 
+    //отправка номера для проверки
     if (event.target.dataset.action === 'btnAuth') {
 
         try{
@@ -215,6 +377,7 @@ window.addEventListener('click', function (event) {
                     regWND = document.querySelector('.popup');
                     regWND.querySelector('.dialog__window').style.height = '300px';
                     break;
+                //неверный формат номера
                 case '2':
                     const phoneWND =document.querySelector('.autorization__conteiner');
                     phoneWND.querySelector('.autorization__input').style.color = 'red';
@@ -227,6 +390,7 @@ window.addEventListener('click', function (event) {
         });
     }
 
+    //поиск при нажатии на популярный
     if (event.target.dataset.action === 'showcase') {
         const card = event.target.closest('.dinamic__item');
         const prodInfo = {
@@ -245,7 +409,7 @@ window.addEventListener('click', function (event) {
     }
 
 
-
+    //окно аккаунта
     if (event.target.hasAttribute('btnEnter')) {
         popupBg.classList.add('active'); // Добавляем класс 'active' для фона
         popup.classList.add('active');
@@ -261,6 +425,7 @@ window.addEventListener('click', function (event) {
         popup.classList.remove('active');
     }
 
+    //кнопка ревёрс
     if (event.target.hasAttribute('swap_search')) {
         const vform = event.target.closest('.search__component');
         const search__from = vform.querySelector('.search_from').value;
@@ -270,25 +435,34 @@ window.addEventListener('click', function (event) {
     }
 })
 
+
+//функция поиска поездок
 function searchItem() {
     const vform = document.querySelector('.search__component');
     const date = new Date(vform.querySelector('.date__search').value);
+    console.log(vform.querySelector('.date__search').value);
+    console.log(date);
     const search__from = vform.querySelector('.search_from').value;
     const search__to = vform.querySelector('.search__to').value;
     const passangere = vform.querySelector('.passangere__search').value;
-    console.log(passangere);
+    //SELECT * FROM `Ways` WHERE `date` >= 2022-5-23 AND `from` = 'Минск' AND `to` = 'Гомель' AND `passenger`>= 1
+    const mess = "SELECT * FROM `Ways` WHERE `date` = '"+vform.querySelector('.date__search').value+"' AND `from` = '"+search__from+"' AND `to` = '"+search__to+"' AND `passenger`>="+passangere+"";
+    console.log(mess);
     if (search__from != '' && search__to != '') {
         console.log('here');
         jQuery.ajax({
             dataType: 'text',
             type: 'POST',
             url: 'Server.php',
-            data: { request: '0' },
+            data: { request: '5',
+                    dbmess: mess, },
             error: (function () {
                 console.log('error');
             }),
         }).done(function (msg) {
+            console.log
             const json = JSON.parse(msg);
+            console.log(json);
             let Container = document.querySelector('.title');
             Container.innerText = "Поиск";
             Container = null;
@@ -325,33 +499,40 @@ function searchItem() {
 
                 }
             }
-            json.forEach(element => {
-                if (element.from == search__from && element.to == search__to && element.date.day == date.getDate() && element.date.month == date.getMonth() + 1 && element.date.year == date.getFullYear() && Number(element.passenger) >= Number(passangere)) {
-                    console.log('cool');
+
+            if(json.length){
+
+                json.forEach(element=>{
+                    waydate = JSON.parse(element['time'])[0];
+                    way_time = JSON.parse(element['way_time'])[0];
+                console.log(waydate);
                     let timeinway;
-                    if (Number(element.date.hours) + Number(element.way_time.hours < 24) && Number(element.date.minutes) + Number(element.way_time.minutes) < 60) {
+                    if (Number(waydate.hours) + Number(way_time.hours) < 24 && Number(waydate.minutes) + Number(way_time.minutes) < 60) {
                         console.log('shet');
                         timeinway = {
-                            hours: Number(element.date.hours) + Number(element.way_time.hours),
-                            minutes: Number(element.date.minutes) + Number(element.way_time.minutes),
+                            hours: Number(waydate.hours) + Number(way_time.hours),
+                            minutes: Number(waydate.minutes) + Number(way_time.minutes),
                         }
                     } else {
                         console.log('time');
-                        if (Number(element.date.minutes) + Number(element.way_time.minutes) >= 60 && Number(element.date.hours) + Number(element.way_time.hours) < 24) {
+                        if (Number(waydate.minutes) + Number(way_time.minutes) >= 60 && Number(waydate.hours) + Number(way_time.hours) < 24) {
+                            console.log('time1');
                             timeinway = {
-                                hours: Number(element.date.hours) + Number(element.way_time.hours) + 1,
-                                minutes: Number(element.date.minutes) + Number(element.way_time.minutes) - 60,
+                                hours: Number(waydate.hours) + Number(way_time.hours) + 1,
+                                minutes: Number(waydate.minutes) + Number(way_time.minutes) - 60,
                             }
                         } else {
+                            console.log('time2');
                             timeinway = {
-                                hours: Number(element.date.hours) + Number(element.way_time.hours) + 1 - 24,
-                                minutes: Number(element.date.minutes) + Number(element.way_time.minutes) - 60,
+                                hours: Number(waydate.hours) + Number(way_time.hours) + 1 - 24,
+                                minutes: Number(waydate.minutes) + Number(way_time.minutes) - 60,
                             }
                         }
-                        if (Number(element.date.hours) + Number(element.way_time.hours) >= 24 && Number(element.date.minutes) + Number(element.way_time.minutes) < 60) {
+                        if (Number(waydate.hours) + Number(way_time.hours) >= 24 && Number(waydate.date.minutes) + Number(way_time.minutes) < 60) {
+                            console.log('time3');
                             timeinway = {
-                                hours: Number(hours) + Number(element.date.hours) + Number(element.way_time.hours) - 24,
-                                minutes: Number(element.date.minutes) + Number(element.way_time.minutes),
+                                hours: Number(hours) + Number(waydate.hours) + Number(way_time.hours) - 24,
+                                minutes: Number(waydate.minutes) + Number(way_time.minutes),
                             }
                         }
                     }
@@ -363,11 +544,11 @@ function searchItem() {
                         timeinway.minutes = '00';
                     }
 
-                    const dinamicWND = document.querySelector('#search_cards');;
-                    const productHTML = ` <div id="route_info" class="route_info">
+                    let dinamicWND = document.querySelector('#search_cards');;
+                    const productHTML = ` <div id="${element.id}" class="route_info">
                                             <div class="route__big">
                                                 <div class="time">
-                                                    ${element.date.hours}:${element.date.minutes}
+                                                    ${waydate.hours}:${waydate.minutes}
                                                 </div>
                                                 <div class="place">
                                                     ${element.start}
@@ -383,7 +564,7 @@ function searchItem() {
                                             </div>
                                             <div class="route__big">
                                                 <div class="place">
-                                                    Время в пути: ${element.way_time.hours}:${element.way_time.minutes}
+                                                    Время в пути: ${way_time.hours}:${way_time.minutes}
                                                 </div>
                                             </div>
                                             <div class="route__small_coast">
@@ -393,13 +574,37 @@ function searchItem() {
                                                 ${element.passenger}
                                             </div>
                                             <div id="route__but" class="route__but">
-                                                <div class="btnorder">Забронировать</div>
+                                                <div id='btnorder' data-action="btnorder"  class="btnorder">Забронировать</div>
                                             </div>
                                           </div>`;
                     dinamicWND.insertAdjacentHTML('beforeend', productHTML);
+                    dinamicWND = document.getElementById(`${element.id}`);
                     delete Container;
-                }
-            });
+                    if(Object.keys(user).length){
+                        console.log(user.routes);
+                        try{
+                            user.routes.forEach(el=>{
+                                if (el.id == element.id){
+                                    dinamicWND.querySelector('#btnorder').innerText = 'Забронировано';
+                                    dinamicWND.querySelector('#btnorder').id = 'conf_order';
+                                    dinamicWND.querySelector('.btnorder').dataset.action = 'conf_order';
+                                    dinamicWND.querySelector('.btnorder').className = 'btnConfOrder';
+                                }
+                            })
+                        }catch{
+                            if (e instanceof TypeError) {
+
+                                console.log('er');
+                            }
+                        }
+                        
+                    }
+                
+                });
+
+                
+            }else{
+            }
         })
     }
 
@@ -441,27 +646,27 @@ function Send() {
     }).done(function (msg) {
         const json = JSON.parse(msg);
         console.log(json);
-        const waysContainer = document.querySelector('#ways-container');
+        let waysContainer = document.querySelector('#ways-container');
         waysContainer.classList.remove("dinamic__item");
-        for (let i = 0; i < 9; i++) {
-            const productHTML = `<div id="dinamic__item" data-action="showcase" class="dinamic__item">
-                                    <div data-action="showcase" class="item_zone_left">
-                                        <div class="left__title" data-action="showcase">
-                                            <div class="from">${json[i].from}</div> 
-                                            <div>-</div>
-                                            <div class="to">${json[i].to}</div>
+        json.forEach(element =>{
+            const productHTML = `<div id="${element.id}" data-action="showcase" class="dinamic__item">
+                                        <div data-action="showcase" class="item_zone_left">
+                                            <div class="left__title" data-action="showcase">
+                                                <div class="from">${element.from}</div> 
+                                                <div>-</div>
+                                                <div class="to">${element.to}</div>
+                                            </div>
+                                            <div data-action="showcase" class="left__coast">
+                                                <div class="coast">${element.coast}</div> 
+                                                <label>р.</label>
+                                            </div>
+                
                                         </div>
-                                        <div data-action="showcase" class="left__coast">
-                                            <div class="coast">${json[i].coast}</div> 
-                                            <label>р.</label>
+                                        <div data-action="showcase" class="item_zone_right">
+                                            <img src="./images/pngwing.com.png" width="25px" height="25px" data-action="showcase">
                                         </div>
-            
-                                    </div>
-                                    <div data-action="showcase" class="item_zone_right">
-                                        <img src="./images/pngwing.com.png" width="25px" height="25px" data-action="showcase">
-                                    </div>
-                                </div> `;
-            waysContainer.insertAdjacentHTML('beforeend', productHTML);
-        }
+                                    </div> `;
+                waysContainer.insertAdjacentHTML('beforeend', productHTML);
+        });
     })
 }
