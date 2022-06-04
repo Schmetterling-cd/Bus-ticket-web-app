@@ -7,13 +7,11 @@ class Server{
     public function Listener($request){
         if( $request == $_POST){
             $patternPN = '/(\+)375(\d+){9}/';
+            echo $request['request'];
             switch ($request['request']){
-
                 case '0':
-                    //$this-> waysJSON();
                     $this-> waysDB();
-                    break;
-                    
+                    break;  
                 case '1':
                     if( preg_match($patternPN,$request['number'])){
                         $this->userFinder($request['number']);
@@ -43,8 +41,7 @@ class Server{
                         $this->Autorization($_COOKIE["phone"],$_COOKIE["password"]);
                     }else{
                         echo null;
-                    }
-                    
+                    }   
                     break;
                 case '8':
                     setcookie("password", null);
@@ -149,6 +146,7 @@ class Server{
         $data = $table[0];
         $json_string = json_encode($data);
         echo $json_string;
+        mysqli_close($mysqli); 
     }
 
     function waysDB(){
@@ -156,10 +154,13 @@ class Server{
         if (mysqli_connect_errno()){
             echo "DB conection error";
         }
+        echo 'Ways';
         $req = mysqli_query($mysqli,"SELECT * FROM `Ways` WHERE `date`>=CURRENT_DATE ORDER BY `passenger` ASC LIMIT 9");
+        echo $req;
         $table = mysqli_fetch_all($req, MYSQLI_ASSOC);
         $json_string = json_encode($table);
         echo $json_string;
+        mysqli_close($mysqli); 
     }
 
     function SearcITM($DBmess){
@@ -171,6 +172,7 @@ class Server{
         $table = mysqli_fetch_all($req, MYSQLI_ASSOC);
         $json_string = json_encode($table);
         echo $json_string;
+        mysqli_close($mysqli); 
     }
 
     private function waysJSON(){

@@ -1,16 +1,17 @@
+Send();
 let popupBg = document.querySelector('.popup'); // Фон попап окна
 let popup = document.querySelector('.dialog__window'); // Само окно
 let modal = document.getElementById("popup");
 let user = new Object();
-//let btnModal = document.getElementById("btnEnter");
 let todayDate = new Date();
+let toDelete;
 let ways;
 let numberPh;
 document.getElementById('davaToday').valueAsDate = todayDate;
-Start();
-Send();
+//Start();
 window.addEventListener('click', function (event) {
 
+    //выход из аккаунта
     if (event.target.hasAttribute('btnExit')) {
         console.log('exit');
         user = null;
@@ -30,6 +31,11 @@ window.addEventListener('click', function (event) {
 
     if (event.target.hasAttribute('bus-search')) {
         searchItem();
+    }
+
+    //нажатие на кнопку забранировано
+    if (event.target.dataset.action === 'conf_order') {
+
     }
 
     // забронировать
@@ -377,6 +383,32 @@ window.addEventListener('click', function (event) {
 
     }
 
+    if (event.target.dataset.action === 'enouncement_button_true') {
+        const toDelete = event.target.closest('#route_info').id;
+        const datarq = {
+            request: '9',
+            route: toDelete,
+            persone: user.id,
+        };
+        jQuery.ajax({
+            dataType: 'text',
+            type: 'POST',
+            url: 'Server.php',
+            data: datarq,
+            error: (function () {
+                console.log('error in registration');
+            }),
+        }).done(function (msg) {
+
+        });
+    }
+
+    //окно отмены поездки
+    if (event.target.dataset.action === 'conf_order') {
+        toDelete = event.target.closest('.route_info').id;
+        document.querySelector('.renouncement').classList.add('active'); // Добавляем класс 'active' для фона
+        popupBg.classList.add('active');
+    }
 
     //окно аккаунта
     if (event.target.hasAttribute('btnEnter')) {
@@ -387,6 +419,7 @@ window.addEventListener('click', function (event) {
     if (event.target == modal) {
         popupBg.classList.remove('active'); // Убираем активный класс с фона
         popup.classList.remove('active');
+        document.querySelector('.renouncement').classList.remove('active')
     }
 
     if (event.target.hasAttribute('dialogClose')) {
@@ -414,9 +447,7 @@ function searchItem() {
     const search__from = vform.querySelector('.search_from').value;
     const search__to = vform.querySelector('.search__to').value;
     const passangere = vform.querySelector('.passangere__search').value;
-    //SELECT * FROM `Ways` WHERE `date` >= 2022-5-23 AND `from` = 'Минск' AND `to` = 'Гомель' AND `passenger`>= 1
-    const mess = "SELECT * FROM `Ways` WHERE `date` = '"+vform.querySelector('.date__search').value+"' AND `from` = '"+search__from+"' AND `to` = '"+search__to+"' AND `passenger`>="+passangere+"";
-    console.log(mess);
+    let mess = "SELECT * FROM `Ways` WHERE `date` = '"+vform.querySelector('.date__search').value+"' AND `from` = '"+search__from+"' AND `to` = '"+search__to+"' AND `passenger`>="+passangere+"";
     if (search__from != '' && search__to != '') {
         console.log('here');
         jQuery.ajax({
@@ -571,7 +602,7 @@ function searchItem() {
                 
                 });
 
-                
+            mess= null; 
             }else{
             }
         })

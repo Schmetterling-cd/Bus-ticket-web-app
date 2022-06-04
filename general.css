@@ -15,6 +15,65 @@
     z-index: 9999;
 }
 
+.renouncement{
+    width: 250px;
+    height: 100px;
+    top: 50%;
+    left: 50%;
+    border-radius: 3px;
+    background-color: white;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    transform: translate(-50%, -50%) scale(0);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    z-index: 999;
+    position: absolute;
+    pointer-events: none; 
+}
+
+.renouncement.active {
+    transform: translate(-50%, -50%) scale(1);
+    transition: 0.5s all;
+}
+
+.question{
+    width: 100%;
+    height: 30%;
+    font-family: 'Mulish', sans-serif;
+    font-size: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.renouncement__footer{
+    width: 100%;
+    height: 40%;
+    display: flex;
+    justify-content: space-around;
+}
+
+.enouncement_button_true{
+    height: 100%;
+    width: 45%;
+    color: white;
+    border-radius: 3px;
+    background-color: rgb(211, 58, 58);
+    border-color: rgb(211, 58, 58);
+}
+
+.enouncement_button_false{
+    height: 100%;
+    width: 45%;
+    color: rgb(16, 100, 16);
+    border-radius: 3px;
+    background-color: white;
+    border-color: rgb(16, 100, 16);
+}
+
 .popup{
     width: 100%;
     height: 100%;
