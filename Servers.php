@@ -7,9 +7,8 @@ class Server{
     public function Listener($request){
         if( $request == $_POST){
             $patternPN = '/(\+)375(\d+){9}/';
-            echo $request['request'];
             switch ($request['request']){
-                case '0':
+                case '10':
                     $this-> waysDB();
                     break;  
                 case '1':
@@ -76,7 +75,6 @@ class Server{
         if (mysqli_connect_errno()){
             echo "DB conection error";
         }
-        //print_r("INSERT INTO `User`(`id`, `phone_number`, `password`, `name`, `routes`, `status`) VALUES (".(string)$maxid.",".$request["phone_number"].",".$request["password"].",".$request["name"].",".$request["routes"].",".$request["status"].")");
         $req = mysqli_query($mysqli,"INSERT INTO `Bus_ticket`.`User` (`phone_number`,`password`,`name`,`status`) VALUES ('".$request["phone_number"]."','".$request["password"]."','".$request["name"]."','".$request["status"]."')");
         if ($req){
             $this->Autorization($request["phone_number"], $request["password"]);
@@ -112,7 +110,7 @@ class Server{
             echo $json_string;
         } 
     }
-//UPDATE `User` SET `routes` = NULL WHERE `User`.`id` = 1;
+
     function reservRout($userid, $routid, $routs){
         $mysqli = mysqli_connect('localhost','root','5240102H000PB5','Bus_ticket');
         if (mysqli_connect_errno()){
@@ -154,9 +152,7 @@ class Server{
         if (mysqli_connect_errno()){
             echo "DB conection error";
         }
-        echo 'Ways';
         $req = mysqli_query($mysqli,"SELECT * FROM `Ways` WHERE `date`>=CURRENT_DATE ORDER BY `passenger` ASC LIMIT 9");
-        echo $req;
         $table = mysqli_fetch_all($req, MYSQLI_ASSOC);
         $json_string = json_encode($table);
         echo $json_string;
@@ -173,13 +169,6 @@ class Server{
         $json_string = json_encode($table);
         echo $json_string;
         mysqli_close($mysqli); 
-    }
-
-    private function waysJSON(){
-        $file = 'ways.json';
-        $json_string = file_get_contents($file);
-            
-        echo $json_string ;
     }
 
 }

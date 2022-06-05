@@ -1,4 +1,5 @@
-Send();
+Vitrine();
+Start();
 let popupBg = document.querySelector('.popup'); // Фон попап окна
 let popup = document.querySelector('.dialog__window'); // Само окно
 let modal = document.getElementById("popup");
@@ -8,7 +9,6 @@ let toDelete;
 let ways;
 let numberPh;
 document.getElementById('davaToday').valueAsDate = todayDate;
-//Start();
 window.addEventListener('click', function (event) {
 
     //выход из аккаунта
@@ -19,7 +19,7 @@ window.addEventListener('click', function (event) {
             type: "POST",
             chache: false,
             dataType: 'text',
-            url: 'Server.php',
+            url: 'Servers.php',
             data: {"request": '8'},
             error: (function () {
                 console.log('error');
@@ -35,7 +35,23 @@ window.addEventListener('click', function (event) {
 
     //нажатие на кнопку забранировано
     if (event.target.dataset.action === 'conf_order') {
-
+        const datarq = {
+            request: '10',
+            routid: event.target.closest('.route_info').id,
+            userid: user.id,
+        }
+        jQuery.ajax({
+            type: "POST",
+            chache: false,
+            dataType: 'text',
+            url: 'Servers.php',
+            data: datarq,
+            error: (function () {
+                console.log('error');
+            }),
+        }).done(function(){
+            
+        })
     }
 
     // забронировать
@@ -63,7 +79,7 @@ window.addEventListener('click', function (event) {
                 type: "POST",
                 chache: false,
                 dataType: 'text',
-                url: 'Server.php',
+                url: 'Servers.php',
                 data: datarq,
                 error: (function () {
                     console.log('error');
@@ -75,6 +91,9 @@ window.addEventListener('click', function (event) {
                 routeWND.querySelector('.btnorder').dataset.action = 'conf_order';
                 routeWND.querySelector('.btnorder').className = 'btnConfOrder';
             });
+        }else{
+            popupBg.classList.add('active'); // Добавляем класс 'active' для фона
+            popup.classList.add('active');
         }
         
     }
@@ -88,12 +107,11 @@ window.addEventListener('click', function (event) {
             password: pass,
             number: numberPh,
         }
-        //console.log(pass);
         jQuery.ajax({
             type: "POST",
             chache: false,
             dataType: 'text',
-            url: 'Server.php',
+            url: 'Servers.php',
             data: datarq,
             error: (function () {
                 console.log('error in password');
@@ -152,7 +170,7 @@ window.addEventListener('click', function (event) {
                     type: "POST",
                     chache: false,
                     dataType: 'text',
-                    url: 'Server.php',
+                    url: 'Servers.php',
                     data: datarq,
                     error: (function () {
                         console.log('error in password');
@@ -237,7 +255,8 @@ window.addEventListener('click', function (event) {
                 });
             });
         }else{
-            console.log('empty');
+            popupBg.classList.add('active'); // Добавляем класс 'active' для фона
+            popup.classList.add('active');
         }
     }
 
@@ -269,7 +288,7 @@ window.addEventListener('click', function (event) {
             jQuery.ajax({
                 dataType: 'text',
                 type: 'POST',
-                url: 'Server.php',
+                url: 'Servers.php',
                 data: datarq,
                 error: (function () {
                     console.log('error in registration');
@@ -318,7 +337,7 @@ window.addEventListener('click', function (event) {
         jQuery.ajax({
             dataType: 'text',
             type: 'POST',
-            url: 'Server.php',
+            url: 'Servers.php',
             data: datarq,
             error: (function () {
                 console.log('error in auth');
@@ -393,7 +412,7 @@ window.addEventListener('click', function (event) {
         jQuery.ajax({
             dataType: 'text',
             type: 'POST',
-            url: 'Server.php',
+            url: 'Servers.php',
             data: datarq,
             error: (function () {
                 console.log('error in registration');
@@ -453,7 +472,7 @@ function searchItem() {
         jQuery.ajax({
             dataType: 'text',
             type: 'POST',
-            url: 'Server.php',
+            url: 'Servers.php',
             data: { request: '5',
                     dbmess: mess, },
             error: (function () {
@@ -615,7 +634,7 @@ function EnterIn() {
     jQuery.ajax({
         dataType: 'json',
         type: 'POST',
-        url: 'Server.php',
+        url: 'Servers.php',
         data: { message: '1' },
         error: (function () {
             console.log('error');
@@ -634,57 +653,59 @@ function EnterIn() {
     });
 }
 
-function Send() {
+function Vitrine(){
+    const datarq = {
+        request: '10',
+    };
+    
     jQuery.ajax({
-        dataType: 'text',
         type: "POST",
-        url: "Server.php",
-        data: { request: '0' },
+        chache: false,
+        dataType: 'text',
+        url: 'Servers.php',
+        data: datarq,
         error: (function () {
-            console.log('error in vitrine');
+            console.log('error in password');
         }),
     }).done(function (msg) {
         const json = JSON.parse(msg);
-        console.log(json);
-        let waysContainer = document.querySelector('#ways-container');
-        waysContainer.classList.remove("dinamic__item");
-        json.forEach(element =>{
-            const productHTML = `<div id="${element.id}" data-action="showcase" class="dinamic__item">
-                                        <div data-action="showcase" class="item_zone_left">
-                                            <div class="left__title" data-action="showcase">
-                                                <div class="from">${element.from}</div> 
-                                                <div>-</div>
-                                                <div class="to">${element.to}</div>
+            console.log(json);
+            let waysContainer = document.querySelector('#ways-container');
+            waysContainer.classList.remove("dinamic__item");
+            json.forEach(element =>{
+                const productHTML = `<div id="${element.id}" data-action="showcase" class="dinamic__item">
+                                            <div data-action="showcase" class="item_zone_left">
+                                                <div class="left__title" data-action="showcase">
+                                                    <div class="from">${element.from}</div> 
+                                                    <div>-</div>
+                                                    <div class="to">${element.to}</div>
+                                                </div>
+                                                <div data-action="showcase" class="left__coast">
+                                                    <div class="coast">${element.coast}</div> 
+                                                    <label>р.</label>
+                                                </div>
+                    
                                             </div>
-                                            <div data-action="showcase" class="left__coast">
-                                                <div class="coast">${element.coast}</div> 
-                                                <label>р.</label>
+                                            <div data-action="showcase" class="item_zone_right">
+                                                <img src="./images/pngwing.com.png" width="25px" height="25px" data-action="showcase">
                                             </div>
-                
-                                        </div>
-                                        <div data-action="showcase" class="item_zone_right">
-                                            <img src="./images/pngwing.com.png" width="25px" height="25px" data-action="showcase">
-                                        </div>
-                                    </div> `;
-                waysContainer.insertAdjacentHTML('beforeend', productHTML);
-        });
-    })
+                                        </div> `;
+                    waysContainer.insertAdjacentHTML('beforeend', productHTML);
+            });
+    });
 }
 
 function Start(){
     jQuery.ajax({
         dataType: 'text',
         type: "POST",
-        url: "Server.php",
+        url: "Servers.php",
         data: { request: '7' },
         error: (function () {
             console.log('error in vitrine');
         }),
     }).done(function (msg) {
-        console.log(msg);
-        if(msg == null){
-           console.log('null'); 
-        }else{
+        if(msg != ''){
             Auth(msg);
         }
         
