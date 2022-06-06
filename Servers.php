@@ -46,6 +46,9 @@ class Server{
                     setcookie("password", null);
                     setcookie("phone", null);
                     break;
+                case '9':
+                    $this->routDel($request["route"],$request["usernum"],$request["persone"]);
+                    break;
                     
             }  
         } 
@@ -169,6 +172,33 @@ class Server{
         $json_string = json_encode($table);
         echo $json_string;
         mysqli_close($mysqli); 
+    }
+
+    function routDel($routID,$usernum,$userID){
+        $mysqli = mysqli_connect('localhost','root','5240102H000PB5','Bus_ticket');
+        if (mysqli_connect_errno()){
+            echo "DB conection error";
+        }
+        $req = mysqli_query($mysqli,"SELECT * FROM `Ways` WHERE `id`=".$routID);
+        $table = mysqli_fetch_all($req, MYSQLI_ASSOC);
+        $data = json_decode($table[0]["pass"]);
+        foreach ($data as $val){
+            if ($val->phone_number == $usernum){
+                $index = array_keys($data, $val)[0];
+                unset($data[$index]);
+            }
+        }
+        $req = mysqli_query($mysqli,"UPDATE `Ways` SET `pass` = '".json_encode($data)."' WHERE `Ways`.`id` =".$routID);
+        $req = mysqli_query($mysqli,"SELECT * FROM `User` WHERE `id`=".$userID);
+        $table = mysqli_fetch_all($req, MYSQLI_ASSOC);
+        $data = json_decode($table[0]["routes"]);
+        foreach ($data as $val){
+            if ($val->id == $routID){
+                $index = array_keys($data, $val)[0];
+                unset($data[$index]);
+            }
+        }
+        $req = mysqli_query($mysqli,"UPDATE `User` SET `routes` = '".json_encode($data)."' WHERE `User`.`id` =".$userID);
     }
 
 }

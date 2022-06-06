@@ -33,27 +33,6 @@ window.addEventListener('click', function (event) {
         searchItem();
     }
 
-    //нажатие на кнопку забранировано
-    if (event.target.dataset.action === 'conf_order') {
-        const datarq = {
-            request: '10',
-            routid: event.target.closest('.route_info').id,
-            userid: user.id,
-        }
-        jQuery.ajax({
-            type: "POST",
-            chache: false,
-            dataType: 'text',
-            url: 'Servers.php',
-            data: datarq,
-            error: (function () {
-                console.log('error');
-            }),
-        }).done(function(){
-            
-        })
-    }
-
     // забронировать
     if (event.target.dataset.action === 'btnorder') {
         if (Object.keys(user).length) {
@@ -124,10 +103,9 @@ window.addEventListener('click', function (event) {
     // выводим поездки пользователя
     if (event.target.hasAttribute('btnRoutes')) {
         if(Object.keys(user).length){
-            console.log(user.routes[0]['id']);
+            console.log(user.routes);
             let Container = document.querySelector('.title');
             Container.innerText = "Ваши поездки";
-
             try {
                 if (document.querySelector('#search_cards').contains) {
                     Container = document.querySelector('#search_cards');
@@ -160,7 +138,6 @@ window.addEventListener('click', function (event) {
 
                 }
             }
-
             user.routes.forEach(element => {
                 const datarq = {
                     request: '4',
@@ -294,7 +271,9 @@ window.addEventListener('click', function (event) {
                     console.log('error in registration');
                 }),
             }).done(function (msg) {
-                console.log(msg);
+                document.querySelector('.autorization__conteiner').querySelector('.confirm__input').remove();
+                document.querySelector('.autorization__conteiner').querySelector('.confirm__input').remove();
+                Auth(msg);
             });
         }else{
             if(regWND.querySelector('#confirm').value != regWND.querySelector('.autorization__input').value){
@@ -343,7 +322,6 @@ window.addEventListener('click', function (event) {
                 console.log('error in auth');
             }),
         }).done(function (msg) {
-            console.log(msg);
             switch (msg) {
                 //пользователь существует
                 case '0':
@@ -402,23 +380,29 @@ window.addEventListener('click', function (event) {
 
     }
 
+    // отмена бронирования
     if (event.target.dataset.action === 'enouncement_button_true') {
-        const toDelete = event.target.closest('#route_info').id;
+        console.log(user.number);
         const datarq = {
             request: '9',
             route: toDelete,
             persone: user.id,
+            usernum: user.number,
         };
         jQuery.ajax({
+            type: "POST",
+            chache: false,
             dataType: 'text',
-            type: 'POST',
             url: 'Servers.php',
             data: datarq,
             error: (function () {
-                console.log('error in registration');
+                console.log('error in password');
             }),
         }).done(function (msg) {
-
+            document.getElementById(toDelete).remove();
+            document.querySelector('.renouncement').classList.remove('active');
+            popupBg.classList.remove('active');
+            delete toDelete;
         });
     }
 
@@ -751,7 +735,8 @@ function Auth(msg) {
             defaultWND.style.alignItems = "flex-start";
             user.id = json["id"];
             user.name = json["name"];
-            user.routes = JSON.parse(json["routs"]);
+            user.number = json["phone_number"];
+            user.routes = Object.values(JSON.parse(json["routs"]));
             if (user.routes == null || user.routs == '') {
                 user.routes = new Array();
             }
