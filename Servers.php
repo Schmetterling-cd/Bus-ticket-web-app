@@ -33,7 +33,7 @@ class Server{
                     $this-> SearcITM($request['dbmess']);
                     break;
                 case '6':
-                    $this->reservRout($request["userid"],$request["routid"], $request["userroutes"]);
+                    $this->reservRout($request["userid"],$request["routid"], $request["userroutes"], $request["seats"]);
                     break;
                 case '7';
                     if(isset($_COOKIE["phone"]) && isset($_COOKIE["password"]) ){
@@ -48,6 +48,9 @@ class Server{
                     break;
                 case '9':
                     $this->routDel($request["route"],$request["usernum"],$request["persone"]);
+                    break;
+                case '11':
+                    $this->listDB($request["route"]);
                     break;
                     
             }  
@@ -114,7 +117,7 @@ class Server{
         } 
     }
 
-    function reservRout($userid, $routid, $routs){
+    function reservRout($userid, $routid, $routs, $seats){
         $mysqli = mysqli_connect('localhost','root','5240102H000PB5','Bus_ticket');
         if (mysqli_connect_errno()){
             echo "DB conection error";
@@ -131,8 +134,10 @@ class Server{
         $data = $table[0];
         $json = json_decode($data["pass"]);
         $json[] = ($object);
-        $json_string = json_encode($json);
+        $json_string = json_encode($json, JSON_UNESCAPED_UNICODE);
         $req = mysqli_query($mysqli,"UPDATE `Ways` SET `pass` = '".$json_string."' WHERE `Ways`.`id` =".$routid);
+        $count  = $data["passenger"] - $seats;
+        $req = mysqli_query($mysqli,"UPDATE `Ways` SET `passenger` = '".$count."' WHERE `Ways`.`id` =".$routid);
         mysqli_close($mysqli); 
         
     }
@@ -182,6 +187,7 @@ class Server{
         $req = mysqli_query($mysqli,"SELECT * FROM `Ways` WHERE `id`=".$routID);
         $table = mysqli_fetch_all($req, MYSQLI_ASSOC);
         $data = json_decode($table[0]["pass"]);
+        $data2 = json_decode($table[0]["passenger"]);
         foreach ($data as $val){
             if ($val->phone_number == $usernum){
                 $index = array_keys($data, $val)[0];
@@ -194,11 +200,29 @@ class Server{
         $data = json_decode($table[0]["routes"]);
         foreach ($data as $val){
             if ($val->id == $routID){
+                $seats = $val->seats;
                 $index = array_keys($data, $val)[0];
                 unset($data[$index]);
             }
         }
         $req = mysqli_query($mysqli,"UPDATE `User` SET `routes` = '".json_encode($data)."' WHERE `User`.`id` =".$userID);
+        $count  = $data2 + $seats;
+        $req = mysqli_query($mysqli,"UPDATE `Ways` SET `passenger` = '".$count."' WHERE `Ways`.`id` =".$routID);
+        $req = mysqli_query($mysqli,"SELECT * FROM `User` WHERE `id`=".$userID);
+        $table = mysqli_fetch_all($req, MYSQLI_ASSOC);
+        $data = json_decode($table[0]["routes"]);
+        echo json_encode($data);
+    }
+
+    function listDB($routID){
+        $mysqli = mysqli_connect('localhost','root','5240102H000PB5','Bus_ticket');
+        if (mysqli_connect_errno()){
+            echo "DB conection error";
+        }
+        $req = mysqli_query($mysqli,"SELECT * FROM `Ways` WHERE `id`=".$routID);
+        $table = mysqli_fetch_all($req, MYSQLI_ASSOC);
+        $data = json_decode($table[0]["pass"]);
+        echo json_encode($data);
     }
 
 }

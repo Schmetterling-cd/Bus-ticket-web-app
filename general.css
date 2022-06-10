@@ -412,3 +412,52 @@
     outline: none;
     cursor: default;
 }
+
+.btnList{
+    width: 95%;
+    border-radius: 15px;
+    background: none;
+    border-color: orange;
+    border: 3px solid orange;
+    color: orange;
+    height: 55px;
+    outline: 3px;
+    font-size: 20px;
+    font-weight: bold;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    outline: none;
+    cursor: default;
+}
+
+.list__body{
+    width:100%;
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: flex-end;
+
+}
+
+.list__user{
+    width: 30%;
+    height: 100%;
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    background: none;
+    border-color: orange;
+    border: 3px solid orange;
+}
+
+.list__elem{
+    width: 100%;
+    font-size: 18px;
+    font-weight: bold;
+    font-family: 'Mulish', sans-serif;
+    padding-left: 9px;
+}

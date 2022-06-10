@@ -52,6 +52,7 @@ window.addEventListener('click', function (event) {
                 userid: user.id,
                 userroutes: JSON.stringify(user.routes),
                 routid: event.target.closest('.route_info').id,
+                seats: this.document.querySelector('.passangere__search').value,
             }
             console.log(datarq);
             jQuery.ajax({
@@ -399,11 +400,55 @@ window.addEventListener('click', function (event) {
                 console.log('error in password');
             }),
         }).done(function (msg) {
+            console.log(msg);
             document.getElementById(toDelete).remove();
             document.querySelector('.renouncement').classList.remove('active');
             popupBg.classList.remove('active');
             delete toDelete;
+            user.routes = JSON.parse(msg);
         });
+    }
+
+    if (event.target.dataset.action === 'btnList') {
+        const datarq = {
+            request: '11',
+            route: event.target.closest('.route_info').id,
+        }
+        jQuery.ajax({
+            type: "POST",
+            chache: false,
+            dataType: 'text',
+            url: 'Servers.php',
+            data: datarq,
+            error: (function () {
+                console.log('error in password');
+            }),
+        }).done(function(msg){
+            json = JSON.parse(msg);
+            let len = json.length;
+            let defaultWND = document.getElementById(event.target.closest('.route_info').id);
+            //defaultWND.style.height = `${len*30+100}px`
+            let defaultHTML = `<div class='list__body'><div class='list__user'></div></div>`;
+            defaultWND.insertAdjacentHTML('afterend', defaultHTML);
+            document.getElementById('search_cards').style.height = document.getElementById('search_cards').clientHeight + len*30+60 + 'px';
+            document.querySelector('.list__body').style.height = `${len*30+60}px`;
+            json.forEach(element=>{
+                defaultHTML = `
+                                    <div class="list__elem"> ${element.name} : ${element.phone_number}</div>
+                               `;
+                document.querySelector('.list__user').insertAdjacentHTML('beforeend', defaultHTML);//list__body
+                document.querySelector('.btnList').dataset.action = 'list__body_open';
+                document.querySelector('.list__body').id = event.target.closest('.route_info').id + 'lb';
+            })
+        });
+    }
+
+    if (event.target.dataset.action === 'list__body_open') { 
+        let i = this.document.getElementById(event.target.closest('.route_info').id + 'lb').clientHeight;
+        console.log(i);
+        event.target.closest('#search_cards').style.height =  (event.target.closest('#search_cards').clientHeight) - i - 10 + 'px';
+        this.document.getElementById(event.target.closest('.route_info').id + 'lb').remove();
+        document.querySelector('.btnList').dataset.action = 'btnList';
     }
 
     //окно отмены поездки
@@ -703,13 +748,36 @@ function Auth(msg) {
     switch (json["status"]) {
         //пароль совпал пользователь админ
         case 'admin':
-            console.log('auth3');
-            const dinamicWND = document.querySelector('.autorization__conteiner');
-            dinamicWND.querySelector('.btnAuth').remove();
-            dinamicWND.querySelector('.autorization__input').remove();
+            let adminWND = document.getElementById('btnEnter');
+            adminWND.textContent = json["name"];
+            document.querySelector('.text_dHeader').textContent = 'Аккаунт';
+            adminWND = adminWND.closest('.nav__component');
+            adminWND.style.marginLeft = '15px';
+            console.log('default');
+            ways = JSON.parse(json["routs"]);
+            adminWND = document.querySelector('.autorization__conteiner');
+            adminWND.querySelector('.btnAuth').remove();
+            adminWND.querySelector('.autorization__input').remove();
+            let adminHTML = `<div class='inviter__body'>
+                                            <div class='inviter__name'>${json["name"]} <img id='btnEdit' class='inviter__img' src='./images/pencil.png'></img></div>
+                                            <div class='inviter__phone'>${json["phone_number"]}</div>
+                                         </div>
+                                         <div class='inviter__footer'>
+                                            <button btnExit id='btnExit' class='inviter__exit'>Выход</button>
+                                         </div>`;
+            adminWND.insertAdjacentHTML('beforeend', adminHTML);
+            adminWND.style.justifyContent = "space-around";
+            adminWND.style.alignItems = "flex-start";
+            user.id = json["id"];
+            user.name = json["name"];
+            user.number = json["phone_number"];
+            
+            
 
-            const productHTML = ``;
-            dinamicWND.insertAdjacentHTML('beforeend', productHTML);
+            document.querySelector('.dinamic__window').remove();
+            document.querySelector('.search__conteiner').remove();
+            document.getElementById('btnRoutes').remove();
+            document.getElementById('btnRoutes').remove(); 
             break;
         //пароль совпал, пользователь гость
         case 'default':
@@ -743,6 +811,162 @@ function Auth(msg) {
             break;
         //пароль совпал, пользователь водитель
         case 'driver':
+            let driverWND = document.getElementById('btnEnter');
+            driverWND.textContent = json["name"];
+            document.querySelector('.text_dHeader').textContent = 'Аккаунт';
+            driverWND = driverWND.closest('.nav__component');
+            driverWND.style.marginLeft = '15px';
+            console.log('default');
+            ways = JSON.parse(json["routs"]);
+            driverWND = document.querySelector('.autorization__conteiner');
+            driverWND.querySelector('.btnAuth').remove();
+            driverWND.querySelector('.autorization__input').remove();
+            const driverHTML = `<div class='inviter__body'>
+                                            <div class='inviter__name'>${json["name"]} <img id='btnEdit' class='inviter__img' src='./images/pencil.png'></img></div>
+                                            <div class='inviter__phone'>${json["phone_number"]}</div>
+                                         </div>
+                                         <div class='inviter__footer'>
+                                            <button btnExit id='btnExit' class='inviter__exit'>Выход</button>
+                                         </div>`;
+            driverWND.insertAdjacentHTML('beforeend', driverHTML);
+            driverWND.style.justifyContent = "space-around";
+            driverWND.style.alignItems = "flex-start";
+            user.id = json["id"];
+            user.name = json["name"];
+            user.number = json["phone_number"];
+            user.routes = Object.values(JSON.parse(json["routs"]));
+
+            document.querySelector('.search__conteiner').remove();
+            document.getElementById('btnRoutes').remove();
+            document.getElementById('btnRoutes').remove();
+
+            let Container = document.querySelector('.title');
+            Container.innerText = "Ваши поездки";
+            try {
+                if (document.querySelector('#search_cards').contains) {
+                    Container = document.querySelector('#search_cards');
+                    Container.remove();
+                    Container = document.querySelector('.dinamic__window');
+                    const searchHTML =`<div id="search_cards" class='search_cards'></div>`;
+                    Container.insertAdjacentHTML('beforeend', searchHTML);
+                }
+            }
+            catch (e) {
+                if (e instanceof TypeError) {
+
+                }
+            }
+
+
+            try {
+                console.log('try');
+                if (document.querySelector('#ways-container').contains) {
+                    Container = document.querySelector('#ways-container');
+                    Container.remove();
+                    Container = document.querySelector('.dinamic__window');
+                    const divHTML =`<div id="search_cards" class='search_cards'></div>`;
+                    Container.insertAdjacentHTML('beforeend', divHTML);
+                }
+            }
+            catch (e) {
+                if (e instanceof TypeError) {
+
+
+                }
+            }
+            user.routes.forEach(element => {
+                const datarq = {
+                    request: '4',
+                    rout: element['id'],
+                }
+                jQuery.ajax({
+                    type: "POST",
+                    chache: false,
+                    dataType: 'text',
+                    url: 'Servers.php',
+                    data: datarq,
+                    error: (function () {
+                        console.log('error in password');
+                    }),
+                }).done(function (msg) {     
+                    console.log(JSON.parse(msg));
+                    json = JSON.parse(msg);
+                    date = JSON.parse(json['time'])[0];
+                    way_time = JSON.parse(json['way_time'])[0];
+                    console.log(date);
+
+                    if ((date.day >= todayDate.getDate() && date.month >= todayDate.getMonth() + 1 && date.year >= todayDate.getFullYear()) || (date.month >= todayDate.getMonth() + 1 && date.year >= todayDate.getFullYear()) || (date.year >= todayDate.getFullYear())) {
+                        let timeinway;
+                    if (Number(date['hours']) + Number(way_time['hours']) < 24 && Number(date['minutes']) + Number(way_time['minutes']) < 60) {
+                        console.log('shet');
+                        timeinway = {
+                            hours: Number(date['hours']) + Number(way_time['hours']),
+                            minutes: Number(date['minutes']) + Number(way_time['minutes']),
+                        }
+                    } else {
+                        console.log('time');
+                        if (Number(date['minutes']) + Number(way_time.minutes) >= 60 && Number(date['hours']) + Number(way_time['hours']) < 24) {
+                            timeinway = {
+                                hours: Number(date['hours']) + Number(way_time['hours']) + 1,
+                                minutes: Number(date['minutes']) + Number(way_time['minutes']) - 60,
+                            }
+                        } else {
+                            timeinway = {
+                                hours: Number(date['hours']) + Number(way_time['hours']) + 1 - 24,
+                                minutes: Number(date['minutes']) + Number(way_time['minutes']) - 60,
+                            }
+                        }
+                        if (Number(date['hours']) + Number(way_time['hours']) >= 24 && Number(date['minutes']) + Number(way_time.minutes) < 60) {
+                            timeinway = {
+                                hours: Number(hours) + Number(date['hours']) + Number(way_time['hours']) - 24,
+                                minutes: Number(date['minutes']) + Number(way_time['minutes']),
+                            }
+                        }
+                    }
+
+                    if (timeinway.hours == 24) {
+                        timeinway.hours = '00';
+                    }
+                    if (timeinway.minutes == 0) {
+                        timeinway.minutes = '00';
+                    }
+                    const dinamicWND = document.querySelector('#search_cards');;
+                    const productHTML = ` <div id="${json.id}" class="route_info">
+                                            <div class="route__big">
+                                                <div class="time">
+                                                    ${date.hours}:${date.minutes}
+                                                </div>
+                                                <div class="place">
+                                                    ${json.start}
+                                                </div>
+                                            </div>
+                                            <div class="route__big">
+                                                <div class="time">
+                                                    ${timeinway.hours}:${timeinway.minutes}
+                                                </div>
+                                                <div class="place">
+                                                    ${json.end}
+                                                </div>
+                                            </div>
+                                            <div class="route__big">
+                                                <div class="place">
+                                                    Дата отправления: ${date.day}.${date.month}
+                                                </div>
+                                            </div>
+                                            <div class="route__small_coast">
+                                                ${json.number}
+                                            </div>
+                                            <div class="route__small">
+                                                ${json.passenger}
+                                            </div>
+                                            <div id="route__but" class="route__but">
+                                                <div id='btnList' data-action="btnList" class="btnList">Список</div>
+                                            </div>
+                                          </div>`;
+                    dinamicWND.insertAdjacentHTML('beforeend', productHTML);
+                    }
+                });
+            });
             break;
         //пароль не совпал
         case 'non':
