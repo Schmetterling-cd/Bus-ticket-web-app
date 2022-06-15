@@ -424,6 +424,7 @@ window.addEventListener('click', function (event) {
                 console.log('error in password');
             }),
         }).done(function(msg){
+            console.log(msg);
             json = JSON.parse(msg);
             let len = json.length;
             let defaultWND = document.getElementById(event.target.closest('.route_info').id);
@@ -774,10 +775,18 @@ function Auth(msg) {
             
             
 
+            //<input type="text" class="autorization__input" placeholder="Номер телефона"></input>
+
             document.querySelector('.dinamic__window').remove();
             document.querySelector('.search__conteiner').remove();
             document.getElementById('btnRoutes').remove();
             document.getElementById('btnRoutes').remove(); 
+
+            adminHTML = ` <div class="dinamic__window"></div>`;
+            adminWND = document.querySelector('.header');
+            adminWND.insertAdjacentHTML('afterend', adminHTML);
+            document.querySelector('.dinamic__window').style.height = "500px";
+
             break;
         //пароль совпал, пользователь гость
         case 'default':

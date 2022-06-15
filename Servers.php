@@ -81,7 +81,7 @@ class Server{
         if (mysqli_connect_errno()){
             echo "DB conection error";
         }
-        $req = mysqli_query($mysqli,"INSERT INTO `Bus_ticket`.`User` (`phone_number`,`password`,`name`,`status`) VALUES ('".$request["phone_number"]."','".$request["password"]."','".$request["name"]."','".$request["status"]."')");
+        $req = mysqli_query($mysqli,"INSERT INTO `Bus_ticket`.`User` (`phone_number`,`password`,`name`,`status`, `routes`) VALUES ('".$request["phone_number"]."','".$request["password"]."','".$request["name"]."','".$request["status"]."', '[]')");
         if ($req){
             $this->Autorization($request["phone_number"], $request["password"]);
         }else{
